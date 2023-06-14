@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[RarityType]
+(
+	[Id] INT IDENTITY(1,1) NOT NULL, 
+	[Description] NVARCHAR(100) NOT NULL,
+	[IsSpecial]	BIT DEFAULT 0,
+	CONSTRAINT [PK_RarityTypeId] PRIMARY KEY CLUSTERED ([Id] ASC),
+)

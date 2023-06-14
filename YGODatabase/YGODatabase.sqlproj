@@ -63,5 +63,23 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="YGOWiki\Dbo\Tables\CardTypes.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedCardTypes.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\Language.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\MonsterCardType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\SpellCardType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TrapCardType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedMonsterCardType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedSpellCardType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedTrapCardType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\RarityType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedRarityType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\MonsterType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedMonsterType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\Attribute.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedAttribute.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\SpecialMonsterType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedSpecialMonsterType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\BanlistType.sql" />
+    <Build Include="YGOWiki\Dbo\Tables\TranslatedBanlistType.sql" />
   </ItemGroup>
 </Project>
