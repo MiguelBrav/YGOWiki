@@ -82,4 +82,7 @@
     <Build Include="YGOWiki\Dbo\Tables\BanlistType.sql" />
     <Build Include="YGOWiki\Dbo\Tables\TranslatedBanlistType.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="YGOWiki\Data\InsertDatabaseInfo.sql" />
+  </ItemGroup>
 </Project>
