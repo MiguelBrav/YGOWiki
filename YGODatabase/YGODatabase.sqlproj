@@ -84,5 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="YGOWiki\Data\InsertDatabaseInfo.sql" />
+    <None Include="YGOWiki\Data\InsertTranslatedDatabaseInfo.sql" />
   </ItemGroup>
 </Project>

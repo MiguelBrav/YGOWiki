@@ -88,10 +88,10 @@ INSERT INTO  [dbo].[SpellCardType] ([OriginalCardTypeId],[TypeName]) VALUES (2,'
 INSERT INTO  [dbo].[SpellCardType] ([OriginalCardTypeId],[TypeName]) VALUES (2,'Equip')
 INSERT INTO  [dbo].[SpellCardType] ([OriginalCardTypeId],[TypeName]) VALUES (2,'Field')
 INSERT INTO  [dbo].[SpellCardType] ([OriginalCardTypeId],[TypeName]) VALUES (2,'Ritual')
+INSERT INTO  [dbo].[SpellCardType] ([OriginalCardTypeId],[TypeName]) VALUES (2,'Quick-play')
 
 --dbo.TrapCardType
 INSERT INTO  [dbo].[TrapCardType] ([OriginalCardTypeId],[TypeName]) VALUES (3,'Normal')
 INSERT INTO  [dbo].[TrapCardType] ([OriginalCardTypeId],[TypeName]) VALUES (3,'Continuous')
 INSERT INTO  [dbo].[TrapCardType] ([OriginalCardTypeId],[TypeName]) VALUES (3,'Counter')
 
---TODO @ Insert Data to translated Tables
