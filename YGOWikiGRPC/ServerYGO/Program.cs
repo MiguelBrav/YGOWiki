@@ -1,3 +1,6 @@
+using ServerYGO.Data;
+using ServerYGO.Interfaces;
+using ServerYGO.Repositories;
 using ServerYGO.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,10 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
         .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
 }));
 
+builder.Services.AddTransient<ITranslatedCardTypesService, TranslatedCardTypesService>();
+builder.Services.AddTransient<DbContextClass>();
+builder.Services
+  .AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 

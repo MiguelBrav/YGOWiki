@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ServerYGO.Data.Entities;
 
 namespace ServerYGO.Data
 {
@@ -15,6 +16,6 @@ namespace ServerYGO.Data
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
         }
 
-        //public DbSet<Example> Example { get; set; }
+        public DbSet<TranslatedCardTypes> TranslatedCardTypes { get; set; }
     }
 }

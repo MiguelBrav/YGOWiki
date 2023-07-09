@@ -1,22 +1,34 @@
+using AutoMapper;
 using Grpc.Core;
 using ServerYGO;
+using ServerYGO.Data.Entities;
+using ServerYGO.Interfaces;
 
 namespace ServerYGO.Services
 {
     public class YGOService : YGOWiki.YGOWikiBase
     {
-        private readonly ILogger<YGOService> _logger;
-        public YGOService(ILogger<YGOService> logger)
+        private readonly ITranslatedCardTypesService _cardTypesService;
+        private readonly IMapper _mapper;
+
+        public YGOService(ITranslatedCardTypesService cardTypesService, IMapper mapper)
         {
-            _logger = logger;
+            _cardTypesService = cardTypesService;
+            _mapper = mapper;
         }
 
-        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        public async override Task<AllTypeCardsReply> GetAllTypeCards(ByLanguageId request, ServerCallContext context)
         {
-            return Task.FromResult(new HelloReply
-            {
-                Message = "Hello " + request.Name
-            });
+            List<TranslatedCardTypes> cardTypes = await _cardTypesService.GetAllTypeCardsByLanguageId(request.LanguageId);
+
+            AllTypeCardsReply result = new AllTypeCardsReply();
+
+            List<CardTypeDetail> results = _mapper.Map<List<TranslatedCardTypes>, List<CardTypeDetail>>(cardTypes);
+
+            result.CardTypes.AddRange(results);
+
+            return result;
         }
+
     }
 }

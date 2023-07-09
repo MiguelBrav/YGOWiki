@@ -1,18 +1,30 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+
 option csharp_namespace = "ServerYGO";
 
 service YGOWiki {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  rpc GetAllTypeCards(ByLanguageId) returns (AllTypeCardsReply);
+}
+message EmptyRequest{
+
 }
 
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+message ByLanguageId{
+	google.protobuf.StringValue LanguageId = 1;
 }
 
-// The response message containing the greetings.
-message HelloReply {
-  string message = 1;
+message AllTypeCardsReply{
+	repeated CardTypeDetail CardTypes = 1;
+}
+
+message CardTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
 }
