@@ -18,5 +18,10 @@ namespace ServerYGO.Repositories
         {
            return await _dbContext.TranslatedCardTypes.Where(x => x.LanguageId == languageId).ToListAsync();
         }
+
+        public async Task<TranslatedCardTypes> GetCardTypeByLanguageId(string languageId, int typeCardId)
+        {
+            return await _dbContext.TranslatedCardTypes.Where(x => x.LanguageId == languageId && x.OriginalCardTypeId == typeCardId).FirstOrDefaultAsync();
+        }
     }
 }

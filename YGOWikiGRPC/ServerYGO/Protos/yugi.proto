@@ -7,6 +7,9 @@ option csharp_namespace = "ServerYGO";
 service YGOWiki {
 
   rpc GetAllTypeCards(ByLanguageId) returns (AllTypeCardsReply);
+  rpc GetTypeCard(ByLanguageIdAndId) returns (CardTypeDetail);
+  rpc GettAllAttributes(ByLanguageId) returns (AllAttributeReply);
+  rpc GetAttribute(ByLanguageIdAndId) returns (AttributeDetail);
 }
 message EmptyRequest{
 
@@ -16,6 +19,11 @@ message ByLanguageId{
 	google.protobuf.StringValue LanguageId = 1;
 }
 
+message ByLanguageIdAndId{
+	google.protobuf.StringValue LanguageId = 1;
+	google.protobuf.Int32Value  Id = 2;
+}
+
 message AllTypeCardsReply{
 	repeated CardTypeDetail CardTypes = 1;
 }
@@ -23,6 +31,19 @@ message AllTypeCardsReply{
 message CardTypeDetail{
 	google.protobuf.Int32Value  Id = 1;
 	google.protobuf.Int32Value  OriginalCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllAttributeReply{
+	repeated AttributeDetail Attributes = 1;
+}
+
+message AttributeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalAttributeId = 2;
 	google.protobuf.StringValue LanguageId = 3;
 	google.protobuf.StringValue TranslatedName = 4;
 	google.protobuf.StringValue TranslatedDescription = 5;

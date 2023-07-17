@@ -17,6 +17,7 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
 }));
 
 builder.Services.AddTransient<ITranslatedCardTypesService, TranslatedCardTypesService>();
+builder.Services.AddTransient<ITranslatedAttributeService, TranslatedAttributeService>();
 builder.Services.AddTransient<DbContextClass>();
 builder.Services
   .AddAutoMapper(typeof(Program).Assembly);

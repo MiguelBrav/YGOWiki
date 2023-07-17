@@ -8,7 +8,7 @@ namespace ServerYGO.Automapper
         public YugiMapper()
         {
             CreateMap<TranslatedCardTypes, CardTypeDetail>().ReverseMap();
-
+            CreateMap<TranslatedAttribute, AttributeDetail>().ReverseMap();
         }
     }
 }

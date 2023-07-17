@@ -24,9 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Entities\" />
     <Folder Include="Automapper\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
