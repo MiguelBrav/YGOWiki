@@ -10,6 +10,14 @@ service YGOWiki {
   rpc GetTypeCard(ByLanguageIdAndId) returns (CardTypeDetail);
   rpc GettAllAttributes(ByLanguageId) returns (AllAttributeReply);
   rpc GetAttribute(ByLanguageIdAndId) returns (AttributeDetail);
+  rpc GetAllBanlist(ByLanguageId) returns (AllBanlistReply);
+  rpc GetTypeBanlist(ByLanguageIdAndId) returns (BanlistTypeDetail);
+  rpc GetAllMonsterCardTypes(ByLanguageId) returns (AllMonsterCardTypeReply);
+  rpc GetMonsterCardType(ByLanguageIdAndId) returns (MonsterCardDetail);
+  rpc GetAllMonsterTypes(ByLanguageId) returns (AllMonsterTypeReply);
+  rpc GetMonsterType(ByLanguageIdAndId) returns (MonsterTypeDetail);
+  rpc GetAllRarities(ByLanguageId) returns (AllRarityReply);
+  rpc GetRarityType(ByLanguageIdAndId) returns (RarityTypeDetail);
 }
 message EmptyRequest{
 
@@ -48,4 +56,57 @@ message AttributeDetail{
 	google.protobuf.StringValue TranslatedName = 4;
 	google.protobuf.StringValue TranslatedDescription = 5;
 	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllBanlistReply{
+	repeated BanlistTypeDetail BanlistTypes = 1;
+}
+
+message BanlistTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalBanlistTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllMonsterCardTypeReply{
+	repeated MonsterCardDetail MonsterCardTypes = 1;
+}
+
+message MonsterCardDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalMonsterCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+
+message AllMonsterTypeReply{
+	repeated MonsterTypeDetail MonsterTypes = 1;
+}
+
+message MonsterTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalMonsterTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+
+message AllRarityReply{
+	repeated RarityTypeDetail Rarities = 1;
+}
+
+message RarityTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalRarityTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedDescription = 4;
+	google.protobuf.StringValue ImageExample = 5;
 }

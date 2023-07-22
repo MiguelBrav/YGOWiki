@@ -10,13 +10,21 @@ namespace ServerYGO.Services
     {
         private readonly ITranslatedCardTypesService _cardTypesService;
         private readonly ITranslatedAttributeService _attributeService;
+        private readonly ITranslatedBanlistTypeService _banlistTypeService;
+        private readonly ITranslatedMonsterCardTypeService _monsterTypeService;
+        private readonly ITranslatedMonsterTypeService _monsterService;
+        private readonly ITranslatedRarityTypeService _rarityService;
         private readonly IMapper _mapper;
 
-        public YGOService(ITranslatedCardTypesService cardTypesService, IMapper mapper, ITranslatedAttributeService attributeService)
+        public YGOService(ITranslatedCardTypesService cardTypesService, IMapper mapper, ITranslatedAttributeService attributeService, ITranslatedBanlistTypeService banlistTypeService, ITranslatedMonsterCardTypeService monsterTypeService, ITranslatedMonsterTypeService monsterService, ITranslatedRarityTypeService rarityService)
         {
             _cardTypesService = cardTypesService;
             _mapper = mapper;
             _attributeService = attributeService;
+            _banlistTypeService = banlistTypeService;
+            _monsterTypeService = monsterTypeService;
+            _monsterService = monsterService;
+            _rarityService = rarityService;
         }
 
         public async override Task<AllTypeCardsReply> GetAllTypeCards(ByLanguageId request, ServerCallContext context)
@@ -63,5 +71,93 @@ namespace ServerYGO.Services
             return result;
         }
 
+        public async override Task<AllBanlistReply> GetAllBanlist(ByLanguageId request, ServerCallContext context)
+        {
+            List<TranslatedBanlistType> banlistTypes = await _banlistTypeService.GetAllBanlistTypes(request.LanguageId);
+
+            AllBanlistReply result = new AllBanlistReply();
+
+            List<BanlistTypeDetail> results = _mapper.Map<List<TranslatedBanlistType>, List<BanlistTypeDetail>>(banlistTypes);
+
+            result.BanlistTypes.AddRange(results);
+
+            return result;
+        }
+
+        public async override Task<BanlistTypeDetail> GetTypeBanlist(ByLanguageIdAndId request, ServerCallContext context)
+        {
+            TranslatedBanlistType cardAttribute = await _banlistTypeService.GetBanlistTypeByLanguageId(request.LanguageId, (int)request.Id);
+
+            BanlistTypeDetail result = _mapper.Map<BanlistTypeDetail>(cardAttribute);
+
+            return result;
+        }
+
+
+        public async override Task<AllMonsterCardTypeReply> GetAllMonsterCardTypes(ByLanguageId request, ServerCallContext context)
+        {
+            List<TranslatedMonsterCardType> monsterCardTypes = await _monsterTypeService.GetAllTypeMonsterByLanguageId(request.LanguageId);
+
+            AllMonsterCardTypeReply result = new AllMonsterCardTypeReply();
+
+            List<MonsterCardDetail> results = _mapper.Map<List<TranslatedMonsterCardType>, List<MonsterCardDetail>>(monsterCardTypes);
+
+            result.MonsterCardTypes.AddRange(results);
+
+            return result;
+        }
+
+        public async override Task<MonsterCardDetail> GetMonsterCardType(ByLanguageIdAndId request, ServerCallContext context)
+        {
+            TranslatedMonsterCardType monsterCardType = await _monsterTypeService.GetMonsterTypeByLanguageId(request.LanguageId, (int)request.Id);
+
+            MonsterCardDetail result = _mapper.Map<MonsterCardDetail>(monsterCardType);
+
+            return result;
+        }
+
+        public async override Task<AllMonsterTypeReply> GetAllMonsterTypes(ByLanguageId request, ServerCallContext context)
+        {
+            List<TranslatedMonsterType> monsterTypes = await _monsterService.GetAllMonsterByLanguageId(request.LanguageId);
+
+            AllMonsterTypeReply result = new AllMonsterTypeReply();
+
+            List<MonsterTypeDetail> results = _mapper.Map<List<TranslatedMonsterType>, List<MonsterTypeDetail>>(monsterTypes);
+
+            result.MonsterTypes.AddRange(results);
+
+            return result;
+        }
+
+        public async override Task<MonsterTypeDetail> GetMonsterType(ByLanguageIdAndId request, ServerCallContext context)
+        {
+            TranslatedMonsterType monsterType = await _monsterService.GetMonsterByLanguageId(request.LanguageId, (int)request.Id);
+
+            MonsterTypeDetail result = _mapper.Map<MonsterTypeDetail>(monsterType);
+
+            return result;
+        }
+
+        public async override Task<AllRarityReply> GetAllRarities(ByLanguageId request, ServerCallContext context)
+        {
+            List<TranslatedRarityType> rarityTypes = await _rarityService.GetAllRaritiesByLanguageId(request.LanguageId);
+
+            AllRarityReply result = new AllRarityReply();
+
+            List<RarityTypeDetail> results = _mapper.Map<List<TranslatedRarityType>, List<RarityTypeDetail>>(rarityTypes);
+
+            result.Rarities.AddRange(results);
+
+            return result;
+        }
+
+        public async override Task<RarityTypeDetail> GetRarityType(ByLanguageIdAndId request, ServerCallContext context)
+        {
+            TranslatedRarityType rarityType = await _rarityService.GetRarityTypeByLanguageId(request.LanguageId, (int)request.Id);
+
+            RarityTypeDetail result = _mapper.Map<RarityTypeDetail>(rarityType);
+
+            return result;
+        }
     }
 }
