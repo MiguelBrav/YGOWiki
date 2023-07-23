@@ -22,6 +22,9 @@ builder.Services.AddTransient<ITranslatedBanlistTypeService, TranslatedBanlistTy
 builder.Services.AddTransient<ITranslatedMonsterCardTypeService, TranslatedMonsterCardTypeService>();
 builder.Services.AddTransient<ITranslatedMonsterTypeService, TranslatedMonsterTypeService>();
 builder.Services.AddTransient<ITranslatedRarityTypeService, TranslatedRarityTypeService>();
+builder.Services.AddTransient<ITranslatedSpecialMonsterTypeService, TranslatedSpecialMonsterTypeService>();
+builder.Services.AddTransient<ITranslatedSpellCardTypeService, TranslatedSpellCardTypeService>();
+builder.Services.AddTransient<ITranslatedTrapCardTypeService, TranslatedTrapCardTypeService>();
 builder.Services.AddTransient<DbContextClass>();
 builder.Services
   .AddAutoMapper(typeof(Program).Assembly);

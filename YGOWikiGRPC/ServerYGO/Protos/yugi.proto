@@ -18,6 +18,12 @@ service YGOWiki {
   rpc GetMonsterType(ByLanguageIdAndId) returns (MonsterTypeDetail);
   rpc GetAllRarities(ByLanguageId) returns (AllRarityReply);
   rpc GetRarityType(ByLanguageIdAndId) returns (RarityTypeDetail);
+  rpc GetAllSpecialMonsters(ByLanguageId) returns (AllSpecialMonsterTypeReply);
+  rpc GetSpecialMonsterType(ByLanguageIdAndId) returns (SpecialMonsterTypeDetail);
+  rpc GetAllSpellCards(ByLanguageId) returns (AllSpellTypeReply);
+  rpc GetSpellType(ByLanguageIdAndId) returns (SpellTypeDetail);
+  rpc GetAllTrapCards(ByLanguageId) returns (AllTrapTypeReply);
+  rpc GetTrapType(ByLanguageIdAndId) returns (TrapTypeDetail);
 }
 message EmptyRequest{
 
@@ -109,4 +115,43 @@ message RarityTypeDetail{
 	google.protobuf.StringValue LanguageId = 3;
 	google.protobuf.StringValue TranslatedDescription = 4;
 	google.protobuf.StringValue ImageExample = 5;
+}
+
+message AllSpecialMonsterTypeReply{
+	repeated SpecialMonsterTypeDetail SpecialMonsterTypes = 1;
+}
+
+message SpecialMonsterTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalSpecialMonsterTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllSpellTypeReply{
+	repeated SpellTypeDetail SpellTypes = 1;
+}
+
+message SpellTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalSpellCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllTrapTypeReply{
+	repeated TrapTypeDetail TrapTypes = 1;
+}
+
+message TrapTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalTrapCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
 }

@@ -13,6 +13,9 @@ namespace ServerYGO.Automapper
             CreateMap<TranslatedMonsterCardType, MonsterCardDetail>().ReverseMap();
             CreateMap<TranslatedMonsterType, MonsterTypeDetail>().ReverseMap();
             CreateMap<TranslatedRarityType, RarityTypeDetail>().ReverseMap();
+            CreateMap<TranslatedSpecialMonsterType, SpecialMonsterTypeDetail>().ReverseMap();
+            CreateMap<TranslatedSpellCardType, SpellTypeDetail>().ReverseMap();
+            CreateMap<TranslatedTrapCardType, TrapTypeDetail>().ReverseMap();
         }
     }
 }

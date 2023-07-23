@@ -22,5 +22,8 @@ namespace ServerYGO.Data
         public DbSet<TranslatedMonsterCardType> TranslatedMonsterCardType { get; set; }
         public DbSet<TranslatedMonsterType> TranslatedMonsterType { get; set; }
         public DbSet<TranslatedRarityType> TranslatedRarityType { get; set; }
+        public DbSet<TranslatedSpecialMonsterType> TranslatedSpecialMonsterType { get; set; }
+        public DbSet<TranslatedSpellCardType> TranslatedSpellCardType { get; set; }
+        public DbSet<TranslatedTrapCardType> TranslatedTrapCardType { get; set; }
     }
 }
