@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "ServerYGO";
+
+service YGOWiki {
+
+  rpc GetAllTypeCards(ByLanguageId) returns (AllTypeCardsReply);
+  rpc GetTypeCard(ByLanguageIdAndId) returns (CardTypeDetail);
+  rpc GettAllAttributes(ByLanguageId) returns (AllAttributeReply);
+  rpc GetAttribute(ByLanguageIdAndId) returns (AttributeDetail);
+  rpc GetAllBanlist(ByLanguageId) returns (AllBanlistReply);
+  rpc GetTypeBanlist(ByLanguageIdAndId) returns (BanlistTypeDetail);
+  rpc GetAllMonsterCardTypes(ByLanguageId) returns (AllMonsterCardTypeReply);
+  rpc GetMonsterCardType(ByLanguageIdAndId) returns (MonsterCardDetail);
+  rpc GetAllMonsterTypes(ByLanguageId) returns (AllMonsterTypeReply);
+  rpc GetMonsterType(ByLanguageIdAndId) returns (MonsterTypeDetail);
+  rpc GetAllRarities(ByLanguageId) returns (AllRarityReply);
+  rpc GetRarityType(ByLanguageIdAndId) returns (RarityTypeDetail);
+  rpc GetAllSpecialMonsters(ByLanguageId) returns (AllSpecialMonsterTypeReply);
+  rpc GetSpecialMonsterType(ByLanguageIdAndId) returns (SpecialMonsterTypeDetail);
+  rpc GetAllSpellCards(ByLanguageId) returns (AllSpellTypeReply);
+  rpc GetSpellType(ByLanguageIdAndId) returns (SpellTypeDetail);
+  rpc GetAllTrapCards(ByLanguageId) returns (AllTrapTypeReply);
+  rpc GetTrapType(ByLanguageIdAndId) returns (TrapTypeDetail);
+}
+message EmptyRequest{
+
+}
+
+message ByLanguageId{
+	google.protobuf.StringValue LanguageId = 1;
+}
+
+message ByLanguageIdAndId{
+	google.protobuf.StringValue LanguageId = 1;
+	google.protobuf.Int32Value  Id = 2;
+}
+
+message AllTypeCardsReply{
+	repeated CardTypeDetail CardTypes = 1;
+}
+
+message CardTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllAttributeReply{
+	repeated AttributeDetail Attributes = 1;
+}
+
+message AttributeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalAttributeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllBanlistReply{
+	repeated BanlistTypeDetail BanlistTypes = 1;
+}
+
+message BanlistTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalBanlistTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllMonsterCardTypeReply{
+	repeated MonsterCardDetail MonsterCardTypes = 1;
+}
+
+message MonsterCardDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalMonsterCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+
+message AllMonsterTypeReply{
+	repeated MonsterTypeDetail MonsterTypes = 1;
+}
+
+message MonsterTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalMonsterTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+
+message AllRarityReply{
+	repeated RarityTypeDetail Rarities = 1;
+}
+
+message RarityTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalRarityTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedDescription = 4;
+	google.protobuf.StringValue ImageExample = 5;
+}
+
+message AllSpecialMonsterTypeReply{
+	repeated SpecialMonsterTypeDetail SpecialMonsterTypes = 1;
+}
+
+message SpecialMonsterTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalSpecialMonsterTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllSpellTypeReply{
+	repeated SpellTypeDetail SpellTypes = 1;
+}
+
+message SpellTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalSpellCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+message AllTrapTypeReply{
+	repeated TrapTypeDetail TrapTypes = 1;
+}
+
+message TrapTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalTrapCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
