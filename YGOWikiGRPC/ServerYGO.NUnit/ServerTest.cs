@@ -40,8 +40,8 @@ namespace ServerYGO.NUnit
         }
 
         [Test]
-        [TestCase("es-Mx",3)]
-        [TestCase("en-Us",3)]
+        [TestCase("es-Mx", 3)]
+        [TestCase("en-Us", 3)]
         public async Task ShouldReturnTrapCard(string languageId, int typeCard)
         {
             CardTypeDetail expectedResult = new CardTypeDetail()
@@ -58,7 +58,7 @@ namespace ServerYGO.NUnit
 
             };
 
-            CardTypeDetail cardType = await _client.GetTypeCardAsync(new ByLanguageIdAndId { LanguageId = languageId , Id = typeCard});
+            CardTypeDetail cardType = await _client.GetTypeCardAsync(new ByLanguageIdAndId { LanguageId = languageId, Id = typeCard });
 
             Assert.IsNotNull(cardType);
             Assert.AreEqual(cardType, expectedResult);
@@ -217,6 +217,159 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(attributeType);
             Assert.AreEqual(attributeType, expectedResult);
+
+        }
+
+        [Test]
+        [TestCase("es-Mx")]
+        [TestCase("en-Us")]
+        public async Task ShouldReturnRarities(string languageId)
+        {
+            AllRarityReply generalRarities = await _client.GetAllRaritiesAsync(new ByLanguageId { LanguageId = languageId });
+
+            Assert.False(generalRarities.Rarities.Count == 0);
+            Assert.That(generalRarities.Rarities.Any());
+            Assert.IsNotNull(generalRarities);
+        }
+
+        [Test]
+        [TestCase("es-Mx", 1)]
+        [TestCase("en-Us", 1)]
+        public async Task ShouldReturnCommonRarity(string languageId, int attributeId)
+        {
+            RarityTypeDetail expectedResult = new RarityTypeDetail()
+            {
+                Id = languageId == _languageEN ? 1 : 2,
+                OriginalRarityTypeId = 1,
+                LanguageId = languageId,
+                TranslatedDescription = languageId == _languageEN ? "Common" : "Común",
+                ImageExample = languageId == _languageEN ? "https://res.cloudinary.com/imgresd/image/upload/v1687459843/YGOWiki/CommonCard_jkuict.png" :
+                "https://res.cloudinary.com/imgresd/image/upload/v1687459843/YGOWiki/CommonCard_jkuict.png"
+
+            };
+
+            RarityTypeDetail rarityType = await _client.GetRarityTypeAsync(new ByLanguageIdAndId { LanguageId = languageId, Id = attributeId });
+
+            Assert.IsNotNull(rarityType);
+            Assert.AreEqual(rarityType, expectedResult);
+
+        }
+
+        [Test]
+        [TestCase("es-Mx")]
+        [TestCase("en-Us")]
+        public async Task ShouldReturnSpecialMonsters(string languageId)
+        {
+            AllSpecialMonsterTypeReply generalSpecialMonsters = await _client.GetAllSpecialMonstersAsync(new ByLanguageId { LanguageId = languageId });
+
+            Assert.False(generalSpecialMonsters.SpecialMonsterTypes.Count == 0);
+            Assert.That(generalSpecialMonsters.SpecialMonsterTypes.Any());
+            Assert.IsNotNull(generalSpecialMonsters);
+        }
+
+        [Test]
+        [TestCase("es-Mx", 1)]
+        [TestCase("en-Us", 1)]
+        public async Task ShouldReturnGemini(string languageId, int attributeId)
+        {
+            SpecialMonsterTypeDetail expectedResult = new SpecialMonsterTypeDetail()
+            {
+                Id = languageId == _languageEN ? 1 : 2,
+                OriginalSpecialMonsterTypeId = 1,
+                LanguageId = languageId,
+                TranslatedName = languageId == _languageEN ? "Gemini" : "Géminis",
+                TranslatedDescription = languageId == _languageEN ? "They are treated as Normal Monsters on the field and in the GY, and can gain their effects by performing an additional " +
+                "Normal Summon on them while they are face-up on the field." :
+                " Comparten la característica de ser tratados como Monstruos Normales cuando se encuentran en el Campo o el Cementerio, además de tener efectos que deben de ser \"desbloqueados\" " +
+                "al realizar una segunda Invocación Normal mientras están boca arriba en el Campo.",
+                ImageExample = languageId == _languageEN ? "https://res.cloudinary.com/imgresd/image/upload/v1687461144/YGOWiki/GeminiEN_fgbuya.png" :
+                "https://res.cloudinary.com/imgresd/image/upload/v1687461146/YGOWiki/GeminiES_vddhoj.png"
+
+            };
+
+            SpecialMonsterTypeDetail specialMonsterType = await _client.GetSpecialMonsterTypeAsync(new ByLanguageIdAndId { LanguageId = languageId, Id = attributeId });
+
+            Assert.IsNotNull(specialMonsterType);
+            Assert.AreEqual(specialMonsterType, expectedResult);
+
+        }
+
+        [Test]
+        [TestCase("es-Mx")]
+        [TestCase("en-Us")]
+        public async Task ShouldReturnSpellsCardsType(string languageId)
+        {
+            AllSpellTypeReply generalSpells = await _client.GetAllSpellCardsAsync(new ByLanguageId { LanguageId = languageId });
+
+            Assert.False(generalSpells.SpellTypes.Count == 0);
+            Assert.That(generalSpells.SpellTypes.Any());
+            Assert.IsNotNull(generalSpells);
+        }
+
+        [Test]
+        [TestCase("es-Mx", 6)]
+        [TestCase("en-Us", 6)]
+        public async Task ShouldReturnQuickPlaySpell(string languageId, int attributeId)
+        {
+            SpellTypeDetail expectedResult = new SpellTypeDetail()
+            {
+                Id = languageId == _languageEN ? 11 : 12,
+                OriginalSpellCardTypeId = 6,
+                LanguageId = languageId,
+                TranslatedName = languageId == _languageEN ? "Quick-play Spell Card" : "Carta Mágica de Juego Rápido",
+                TranslatedDescription = languageId == _languageEN ? "Which have a lightning bolt symbol. A type of Spell Card that are Spell Speed 2. The turn player can activate Quick-Play " +
+                "Spell Cards from their hand during any Phase of their turn; either player can activate Set Quick-Play Spell cards during any Phase in either player's turn, except during the turn they are Set." :
+                "Tiene un icono de rayo al lado del nombre. Son una clase de Carta Mágica con una Velocidad de Hechizo 2 que se pueden activar durante cualquier Fase de tu turno, así como en" +
+                " el de tu adversario (siempre que se hubiese Colocado previamente), similar a las Cartas de Trampa.",
+                ImageExample = languageId == _languageEN ? "https://res.cloudinary.com/imgresd/image/upload/v1687675458/QuickPlaySpellEN_lmiuad.png" :
+                "https://res.cloudinary.com/imgresd/image/upload/v1687675458/QuickPlaySpellES_em86lj.png"
+
+            };
+
+            SpellTypeDetail spellType = await _client.GetSpellTypeAsync(new ByLanguageIdAndId { LanguageId = languageId, Id = attributeId });
+
+            Assert.IsNotNull(spellType);
+            Assert.AreEqual(spellType, expectedResult);
+
+        }
+
+        [Test]
+        [TestCase("es-Mx")]
+        [TestCase("en-Us")]
+        public async Task ShouldReturnTrapCardsType(string languageId)
+        {
+            AllTrapTypeReply generalTraps = await _client.GetAllTrapCardsAsync(new ByLanguageId { LanguageId = languageId });
+
+            Assert.False(generalTraps.TrapTypes.Count == 0);
+            Assert.That(generalTraps.TrapTypes.Any());
+            Assert.IsNotNull(generalTraps);
+        }
+
+        [Test]
+        [TestCase("es-Mx", 3)]
+        [TestCase("en-Us", 3)]
+        public async Task ShouldReturnCounterTrap(string languageId, int attributeId)
+        {
+            TrapTypeDetail expectedResult = new TrapTypeDetail()
+            {
+                Id = languageId == _languageEN ? 5 : 6,
+                OriginalTrapCardTypeId = 3,
+                LanguageId = languageId,
+                TranslatedName = languageId == _languageEN ? "Counter Trap Card" : "Carta Trampa de Contraefecto",
+                TranslatedDescription = languageId == _languageEN ? "Which have a curved arrow symbol. are a unique Trap card type that are of Spell Speed 3. Being the only cards/effects that are" +
+                " Spell Speed 3, only other Counter Trap Cards can be activated in response to them. Most of them can only be activated to negate or punish the activations of other cards, or Summons of monsters." :
+                "Tiene un icono de flecha curva al lado del nombre. son las más veloces en cuanto a Velocidad de Hechizo y pueden responder a la activación de cualquier carta si no contradicen el" +
+                " texto en la descripción de la misma. Esta clase de cartas se usa comúnmente para la cancelación de efectos de otras cartas, ya sean tanto Cartas Mágicas o de Trampa, como para la" +
+                " activación de efectos o Invocación de monstruos.",
+                ImageExample = languageId == _languageEN ? "https://res.cloudinary.com/imgresd/image/upload/v1687676988/CounterTrapEN_uorvfq.png" :
+                "https://res.cloudinary.com/imgresd/image/upload/v1687676988/CounterTrapES_pmny3q.png"
+
+            };
+
+            TrapTypeDetail trapType = await _client.GetTrapTypeAsync(new ByLanguageIdAndId { LanguageId = languageId, Id = attributeId });
+
+            Assert.IsNotNull(trapType);
+            Assert.AreEqual(trapType, expectedResult);
 
         }
     }
