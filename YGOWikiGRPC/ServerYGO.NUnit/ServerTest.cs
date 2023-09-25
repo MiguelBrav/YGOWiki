@@ -37,6 +37,7 @@ namespace ServerYGO.NUnit
             Assert.False(generalAllCardsTypes.CardTypes.Count == 0);
             Assert.That(generalAllCardsTypes.CardTypes.Any());
             Assert.IsNotNull(generalAllCardsTypes);
+            Assert.That(generalAllCardsTypes, Is.TypeOf<AllTypeCardsReply>());
         }
 
         [Test]
@@ -62,6 +63,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(cardType);
             Assert.AreEqual(cardType, expectedResult);
+            Assert.That(cardType, Is.TypeOf<CardTypeDetail>());
 
         }
 
@@ -75,6 +77,7 @@ namespace ServerYGO.NUnit
             Assert.False(generalAllBanlistTypes.BanlistTypes.Count == 0);
             Assert.That(generalAllBanlistTypes.BanlistTypes.Any());
             Assert.IsNotNull(generalAllBanlistTypes);
+            Assert.That(generalAllBanlistTypes, Is.TypeOf<AllBanlistReply>());
         }
 
         [Test]
@@ -99,6 +102,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(banlistType);
             Assert.AreEqual(banlistType, expectedResult);
+            Assert.That(banlistType, Is.TypeOf<BanlistTypeDetail>());
 
         }
 
@@ -112,6 +116,7 @@ namespace ServerYGO.NUnit
             Assert.False(generalAllMonsterCardsTypes.MonsterCardTypes.Count == 0);
             Assert.That(generalAllMonsterCardsTypes.MonsterCardTypes.Any());
             Assert.IsNotNull(generalAllMonsterCardsTypes);
+            Assert.That(generalAllMonsterCardsTypes, Is.TypeOf<AllMonsterCardTypeReply>());
         }
 
 
@@ -142,6 +147,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(monsterCardType);
             Assert.AreEqual(monsterCardType, expectedResult);
+            Assert.That(monsterCardType, Is.TypeOf<MonsterCardDetail>());
 
         }
 
@@ -155,6 +161,8 @@ namespace ServerYGO.NUnit
             Assert.False(generalMonsterTypes.MonsterTypes.Count == 0);
             Assert.That(generalMonsterTypes.MonsterTypes.Any());
             Assert.IsNotNull(generalMonsterTypes);
+            Assert.That(generalMonsterTypes, Is.TypeOf<AllMonsterTypeReply>());
+
         }
 
         [Test]
@@ -179,6 +187,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(monsterType);
             Assert.AreEqual(monsterType, expectedResult);
+            Assert.That(monsterType, Is.TypeOf<MonsterTypeDetail>());
 
         }
 
@@ -192,6 +201,7 @@ namespace ServerYGO.NUnit
             Assert.False(generalAttributes.Attributes.Count == 0);
             Assert.That(generalAttributes.Attributes.Any());
             Assert.IsNotNull(generalAttributes);
+            Assert.That(generalAttributes, Is.TypeOf<AllAttributeReply>());
         }
 
 
@@ -217,6 +227,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(attributeType);
             Assert.AreEqual(attributeType, expectedResult);
+            Assert.That(attributeType, Is.TypeOf<AttributeDetail>());
 
         }
 
@@ -230,6 +241,7 @@ namespace ServerYGO.NUnit
             Assert.False(generalRarities.Rarities.Count == 0);
             Assert.That(generalRarities.Rarities.Any());
             Assert.IsNotNull(generalRarities);
+            Assert.That(generalRarities, Is.TypeOf<AllRarityReply>());
         }
 
         [Test]
@@ -252,6 +264,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(rarityType);
             Assert.AreEqual(rarityType, expectedResult);
+            Assert.That(rarityType, Is.TypeOf<RarityTypeDetail>());
 
         }
 
@@ -265,6 +278,7 @@ namespace ServerYGO.NUnit
             Assert.False(generalSpecialMonsters.SpecialMonsterTypes.Count == 0);
             Assert.That(generalSpecialMonsters.SpecialMonsterTypes.Any());
             Assert.IsNotNull(generalSpecialMonsters);
+            Assert.That(generalSpecialMonsters, Is.TypeOf<AllSpecialMonsterTypeReply>());
         }
 
         [Test]
@@ -291,7 +305,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(specialMonsterType);
             Assert.AreEqual(specialMonsterType, expectedResult);
-
+            Assert.That(specialMonsterType, Is.TypeOf<SpecialMonsterTypeDetail>());
         }
 
         [Test]
@@ -304,6 +318,8 @@ namespace ServerYGO.NUnit
             Assert.False(generalSpells.SpellTypes.Count == 0);
             Assert.That(generalSpells.SpellTypes.Any());
             Assert.IsNotNull(generalSpells);
+            Assert.That(generalSpells, Is.TypeOf<AllSpellTypeReply>());
+
         }
 
         [Test]
@@ -330,6 +346,8 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(spellType);
             Assert.AreEqual(spellType, expectedResult);
+            Assert.That(spellType, Is.TypeOf<SpellTypeDetail>());
+
 
         }
 
@@ -343,6 +361,8 @@ namespace ServerYGO.NUnit
             Assert.False(generalTraps.TrapTypes.Count == 0);
             Assert.That(generalTraps.TrapTypes.Any());
             Assert.IsNotNull(generalTraps);
+            Assert.That(generalTraps, Is.TypeOf<AllTrapTypeReply>());
+
         }
 
         [Test]
@@ -370,6 +390,7 @@ namespace ServerYGO.NUnit
 
             Assert.IsNotNull(trapType);
             Assert.AreEqual(trapType, expectedResult);
+            Assert.That(trapType, Is.TypeOf<TrapTypeDetail>());
 
         }
     }
