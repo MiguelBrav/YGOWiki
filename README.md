@@ -22,11 +22,11 @@ var client = new Greeter.GreeterClient(channel);
 var response = await client.SayHelloAsync(new HelloRequest { Name = ".NET" });
 ```
 
-You need to replace the url to "http://www.yugiserverwiki.somee.com/".
+You need to replace the url to "https://ygowiki.application-service.work/".
 
 You can also try it, using Kreya. [Kreya - Calling APIs made easy](https://kreya.app/)
 
-![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1691386768/Github/Kreya01_huyzi8.png)
+![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1695790335/Github/gRPCServer_egef6p.png)
 
 ![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1691386768/Github/Kreya02_jrzlpm.png)
 
