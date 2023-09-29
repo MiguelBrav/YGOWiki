@@ -6,7 +6,7 @@ servers:
 #      proxy: your-rpc-invoker-instance-address # this is optional feature for private-only gRPC services
       urls:
       - grpcwebs://ygowiki.application-service.work/
-      - grpcs://ygowiki.application-service.work/:443
+
 
 
 

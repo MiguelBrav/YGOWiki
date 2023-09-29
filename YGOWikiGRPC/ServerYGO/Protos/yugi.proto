@@ -52,20 +52,20 @@ message EmptyRequest{
 
 // Request to get elements by language
 message ByLanguageId{
-	google.protobuf.StringValue LanguageId = 1;
+	google.protobuf.StringValue LanguageId = 1; // Language
 }
 
 // Request to get an element by language and Id
 message ByLanguageIdAndId{
-	google.protobuf.StringValue LanguageId = 1;
-	google.protobuf.Int32Value  Id = 2;
+	google.protobuf.StringValue LanguageId = 1; // Language
+	google.protobuf.Int32Value  Id = 2; // Id
 }
 
 //[Example]{"CardTypes":[{"Id":1,"OriginalCardTypeId":1,"LanguageId":"en-Us","TranslatedName":"Monster card","TranslatedDescription":"Monster Cards represent monsters that players battle against each other or directly against either player during the Battle Phase. Monsters are the foundation of any Duel.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687284428/YGOWiki/MonsterCardEN_lr9plu.png"}]}
 message AllTypeCardsReply{
 	repeated CardTypeDetail CardTypes = 1;
 }
-/*[Example]{"Id":3,"OriginalCardTypeId":2,"LanguageId":"en-Us","TranslatedName":"Spell Card","TranslatedDescription":"Cards with green-colored borders that have various effects to alter the play of the game. Often, a Spell Card has a single effect to provide a bonus to the user or a weakness to the opponent. Unlike Trap Cards, Spell Cards have the advantage of being able to be played without having to be Set first.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687298873/YGOWiki/SpellCardEN_fua63a.png"}*/
+//[Example]{"Id":3,"OriginalCardTypeId":2,"LanguageId":"en-Us","TranslatedName":"Spell Card","TranslatedDescription":"Cards with green-colored borders that have various effects to alter the play of the game. Often, a Spell Card has a single effect to provide a bonus to the user or a weakness to the opponent. Unlike Trap Cards, Spell Cards have the advantage of being able to be played without having to be Set first.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687298873/YGOWiki/SpellCardEN_fua63a.png"}
 message CardTypeDetail{
 	google.protobuf.Int32Value  Id = 1;
 	google.protobuf.Int32Value  OriginalCardTypeId = 2;
