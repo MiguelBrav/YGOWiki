@@ -80,7 +80,16 @@ message AllAttributeReply{
 	repeated AttributeDetail Attributes = 1;
 }
 
-//[Example]{"Id":7,"OriginalAttributeId":4,"LanguageId":"en-Us","TranslatedName":"Fire Attribute","TranslatedDescription":"FIRE is an Attribute commonly associated with Pyro, Dragon, Dinosaur and Machine-Type monsters, though it is not uncommon in other Types such as Warrior or even Beast. <br><br> FIRE monsters tend to focus on inflicting Effect damage to the opponent, a mechanic traditionally known as \"Burning\". In recent years, a trend among FIRE monsters is that many of them have 200 DEF.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687069789/YGOWiki/FireEN_hnvce0.png"}
+//[Example]
+//{
+//"Id":7,
+//"OriginalAttributeId":4,
+//"LanguageId":"en-Us",
+//"TranslatedName":
+//"Fire Attribute",
+//"TranslatedDescription":"FIRE is an Attribute commonly associated with Pyro, Dragon, Dinosaur and Machine-Type monsters, though it is not uncommon in other Types such as Warrior or even Beast. <br><br> FIRE monsters tend to focus on inflicting Effect damage to the opponent, a mechanic traditionally known as \"Burning\". In recent years, a trend among FIRE monsters is that many of them have 200 DEF.",
+//"ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687069789/YGOWiki/FireEN_hnvce0.png"
+//}
 message AttributeDetail{
 	google.protobuf.Int32Value  Id = 1;
 	google.protobuf.Int32Value  OriginalAttributeId = 2;
