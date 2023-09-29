@@ -1,0 +1,18 @@
+spectype: gendocu
+servers:
+  - selector: "*" # the * must be wrapped with ""
+    envs:
+    - name: "gcp" # the first environment is the default one
+#      proxy: your-rpc-invoker-instance-address # this is optional feature for private-only gRPC services
+      urls:
+      - grpcwebs://ygowiki.application-service.work/
+      - grpcs://ygowiki.application-service.work/:443
+
+
+
+securitySchemes:
+  - name: public
+    title: Public API
+    description: # you can also use the 'file:' instead of text to load a markdown from external file
+      text: The default authentication method - does not require any authentication. All the endpoints support anonymous users.
+

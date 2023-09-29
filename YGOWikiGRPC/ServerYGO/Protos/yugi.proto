@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
+package com.example.ygowiki; 
 option csharp_namespace = "ServerYGO";
 
 // YGOWiki is a versatile server designed to provide comprehensive information about the Yu-Gi-Oh! Trading Card Game. It offers support for multiple languages, allowing users to access card details, and other game-related content in their preferred language. 
