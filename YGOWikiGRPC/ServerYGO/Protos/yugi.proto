@@ -75,7 +75,7 @@ message CardTypeDetail{
 	google.protobuf.StringValue ImageExample = 6;
 }
 
-//[Example]{"Attributes":[{"Id":1,"OriginalAttributeId":1,"LanguageId":"en-Us","TranslatedName":"Dark Attribute","TranslatedDescription":"DARK monsters are perhaps the most favored of all monsters...","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687068439/YGOWiki/DarkEN_vyiivj.png"}]}
+//[Example]{"Attributes":[{"AttributeDetail:"{"Id":1,"OriginalAttributeId":1,"LanguageId":"en-Us","TranslatedName":"Dark Attribute","TranslatedDescription":"DARK monsters are perhaps the most favored of all monsters...","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687068439/YGOWiki/DarkEN_vyiivj.png"}}]}
 message AllAttributeReply{
 	repeated AttributeDetail Attributes = 1;
 }
