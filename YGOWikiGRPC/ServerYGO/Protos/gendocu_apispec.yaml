@@ -6,7 +6,7 @@ servers:
 #      proxy: your-rpc-invoker-instance-address # this is optional feature for private-only gRPC services
       urls:
       - grpcwebs://ygowiki.application-service.work/
-      - grpcs://ygowiki.application-service.work/:443
+
 
 
 
@@ -19,13 +19,4 @@ securitySchemes:
     title: Token Auth
     description:
       text: The standard token authentication. This authentication method is only for demo purposes - the backend ignores the token in the current implementation.
-    callAuthentication:
-      token: # e.g. HTTP Header "Authorization: Bearer aaa.bbbbbbb.ccc"
-        exampleValue: "aaa.bbbbbbb.ccc" # this value should be shared across all the schemes. It should have exactly the same scheme for each protocol - if it differs, then it should be separate authentication method
-        grpc:
-          meta: "x-authorization"
-          valuePrefix: "bearer " # including whitespaces, the prefix for each value
-        grpcweb:
-          header: "authorization"
-          valuePrefix: "Bearer " # including whitespaces, the prefix for each value
 
