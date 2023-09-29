@@ -64,7 +64,15 @@ message ByLanguageIdAndId{
 message AllTypeCardsReply{
 	repeated CardTypeDetail CardTypes = 1;
 }
-//[Example]{"Id":3,"OriginalCardTypeId":2,"LanguageId":"en-Us","TranslatedName":"Spell Card","TranslatedDescription":"Cards with green-colored borders that have various effects to alter the play of the game. Often, a Spell Card has a single effect to provide a bonus to the user or a weakness to the opponent. Unlike Trap Cards, Spell Cards have the advantage of being able to be played without having to be Set first.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687298873/YGOWiki/SpellCardEN_fua63a.png"}
+/*[Example]
+{
+  "service_id": "gendocu.sdk_generator.v3.SdkGenerator",
+  "method_id": "GetBuild",
+  "environment": "prod",
+  "body": "{\"build_id\": \"01FDHBYTKS2YX1SS9GX3RKNSGM\"}",
+  "headers": [{"name": "authorization", "value": "<auth-token>"}]
+}
+*/
 message CardTypeDetail{
 	google.protobuf.Int32Value  Id = 1;
 	google.protobuf.Int32Value  OriginalCardTypeId = 2;
