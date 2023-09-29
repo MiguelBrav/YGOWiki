@@ -80,9 +80,7 @@ message AllAttributeReply{
 	repeated AttributeDetail Attributes = 1;
 }
 
-//[Example]
-//{
-//"AttributeDetail:"
+//[Example]{"AttributeDetail:"
 //{
 //"Id":7,
 //"OriginalAttributeId":4,
