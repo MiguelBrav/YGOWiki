@@ -61,6 +61,7 @@
     <Folder Include="YGOWiki\Dbo" />
     <Folder Include="YGOWiki\Dbo\Tables" />
     <Folder Include="YGOWiki\Release" />
+    <Folder Include="YGOWiki\MySQL" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="YGOWiki\Dbo\Tables\CardTypes.sql" />
@@ -87,5 +88,6 @@
     <None Include="YGOWiki\Data\InsertDatabaseInfo.sql" />
     <None Include="YGOWiki\Data\InsertTranslatedDatabaseInfo.sql" />
     <None Include="YGOWiki\Release\ReleaseScript.sql" />
+    <None Include="YGOWiki\MySQL\ReleaseMysql.txt" />
   </ItemGroup>
 </Project>

@@ -137,7 +137,7 @@ namespace ServerYGO.NUnit
                 "El color de su marco de carta es azul oscuro, similar al marco de un Monstruo de Ritual, pero con un patrón hexagonal similar a la estructura de un panal. Estas cartas han de estar en" +
                 " el Deck Extra. Los Monstruos de Enlace no tienen Niveles y en su lugar tienen un Rating de Enlace. El Rating de Enlace de un Monstruo de Enlace determina el número combinado de monstruos " +
                 "Material de Enlace que no sean de Enlace o los Rating de Enlace combinados de los Materiales de Enlace que sean Monstruos de Enlace (o cualquier combinación de los mismos) necesarios para" +
-                " Invocar por Enlace. El Rating de Enlace de un Monstruo de Enlace también es igual al número de Flechas de Enlace que tiene. ",
+                " Invocar por Enlace. El Rating de Enlace de un Monstruo de Enlace también es igual al número de Flechas de Enlace que tiene.",
                 ImageExample = languageId == _languageEN ? "https://res.cloudinary.com/imgresd/image/upload/v1687371105/YGOWiki/LinkMonsterEN_gvsfov.png" :
                 "https://res.cloudinary.com/imgresd/image/upload/v1687371105/YGOWiki/LinkMonsterES_ws6unj.png"
 

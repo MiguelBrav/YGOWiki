@@ -20,7 +20,7 @@ INSERT INTO [dbo].[CardTypes] ([TypeName]) VALUES ('Spell Card')
 INSERT INTO [dbo].[CardTypes] ([TypeName]) VALUES ('Trap Card')
 
 --dbo.Language
-INSERT INTO [dbo].[Language] ([Id] ,[Description]) VALUES ('en-US','English Language')
+INSERT INTO [dbo].[Language] ([Id] ,[Description]) VALUES ('en-Us','English Language')
 INSERT INTO [dbo].[Language] ([Id] ,[Description]) VALUES ('es-Mx','Spanish Language')
 
 --dbo.MonsterCardType

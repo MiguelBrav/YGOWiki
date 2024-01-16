@@ -11,11 +11,26 @@ namespace ServerYGO.Data
         {
             Configuration = configuration;
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-        }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            string databaseProvider = Configuration.GetValue<string>("DatabaseProvider");
+
+            switch (databaseProvider)
+            {
+                case "SqlServer":
+                    optionsBuilder.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
+                    break;
+
+                case "MySql":
+                    optionsBuilder.UseMySql(Configuration.GetConnectionString("MySqlDbConnection"), ServerVersion.AutoDetect(Configuration.GetConnectionString("MySqlDbConnection")));
+                    break;
+
+                default:
+                    throw new InvalidOperationException("DatabaseProvider does not exists");
+            }
+        }         
+    
         public DbSet<TranslatedCardTypes> TranslatedCardTypes { get; set; }
         public DbSet<TranslatedAttribute> TranslatedAttribute { get; set; }
         public DbSet<TranslatedBanlistType> TranslatedBanlistType { get; set; }
