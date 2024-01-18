@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+option csharp_namespace = "ServerYGO";
+
+// YGOWiki is a versatile server designed to provide comprehensive information about the Yu-Gi-Oh! Trading Card Game. It offers support for multiple languages, allowing users to access card details, and other game-related content in their preferred language. 
+service YGOWiki {
+
+  // Returns all types of cards.
+  rpc GetAllTypeCards(ByLanguageId) returns (AllTypeCardsReply);
+  // Returns details of a specific card type by language and Id.
+  rpc GetTypeCard(ByLanguageIdAndId) returns (CardTypeDetail);
+  // Returns all card attributes.
+  rpc GettAllAttributes(ByLanguageId) returns (AllAttributeReply);
+  // Returns details of a specific card attribute by language and Id.
+  rpc GetAttribute(ByLanguageIdAndId) returns (AttributeDetail);
+  // Returns all banlist types.
+  rpc GetAllBanlist(ByLanguageId) returns (AllBanlistReply);
+  // Returns details of a specific banlist type by language and Id.
+  rpc GetTypeBanlist(ByLanguageIdAndId) returns (BanlistTypeDetail);
+  // Returns all monster card types.
+  rpc GetAllMonsterCardTypes(ByLanguageId) returns (AllMonsterCardTypeReply);
+  // Returns details of a specific monster card type by language and Id.
+  rpc GetMonsterCardType(ByLanguageIdAndId) returns (MonsterCardDetail);
+  // Returns all monster types.
+  rpc GetAllMonsterTypes(ByLanguageId) returns (AllMonsterTypeReply);
+  // Returns details of a specific monster type by language and Id.
+  rpc GetMonsterType(ByLanguageIdAndId) returns (MonsterTypeDetail);
+  // Returns all rarities.
+  rpc GetAllRarities(ByLanguageId) returns (AllRarityReply);
+  // Returns details of a specific rarity type by language and Id.
+  rpc GetRarityType(ByLanguageIdAndId) returns (RarityTypeDetail);
+  // Returns all special monsters.
+  rpc GetAllSpecialMonsters(ByLanguageId) returns (AllSpecialMonsterTypeReply);
+  // Returns details of a specific special monster type by language and Id.
+  rpc GetSpecialMonsterType(ByLanguageIdAndId) returns (SpecialMonsterTypeDetail);
+  // Returns all spell card types.
+  rpc GetAllSpellCards(ByLanguageId) returns (AllSpellTypeReply);
+  // Returns details of a specific spell card type by language and Id.
+  rpc GetSpellType(ByLanguageIdAndId) returns (SpellTypeDetail);
+  // Returns all trap card types.
+  rpc GetAllTrapCards(ByLanguageId) returns (AllTrapTypeReply);
+  // Returns details of a specific trap card type by language and Id.
+  rpc GetTrapType(ByLanguageIdAndId) returns (TrapTypeDetail);
+}
+
+// Empty request
+message EmptyRequest{
+
+}
+
+// Request to get elements by language
+message ByLanguageId{
+	google.protobuf.StringValue LanguageId = 1;
+}
+
+// Request to get an element by language and Id
+message ByLanguageIdAndId{
+	google.protobuf.StringValue LanguageId = 1;
+	google.protobuf.Int32Value  Id = 2;
+}
+
+//[Example]{"CardTypes":[{"Id":1,"OriginalCardTypeId":1,"LanguageId":"en-Us","TranslatedName":"Monster card","TranslatedDescription":"Monster Cards represent monsters that players battle against each other or directly against either player during the Battle Phase. Monsters are the foundation of any Duel.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687284428/YGOWiki/MonsterCardEN_lr9plu.png"}]}
+message AllTypeCardsReply{
+	repeated CardTypeDetail CardTypes = 1;
+}
+//[Example]{"Id":3,"OriginalCardTypeId":2,"LanguageId":"en-Us","TranslatedName":"Spell Card","TranslatedDescription":"Cards with green-colored borders that have various effects to alter the play of the game. Often, a Spell Card has a single effect to provide a bonus to the user or a weakness to the opponent. Unlike Trap Cards, Spell Cards have the advantage of being able to be played without having to be Set first.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687298873/YGOWiki/SpellCardEN_fua63a.png"}
+message CardTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+//[Example]{"Attributes":[{"Id":1,"OriginalAttributeId":1,"LanguageId":"en-Us","TranslatedName":"Dark Attribute","TranslatedDescription":"DARK monsters are perhaps the most favored of all monsters. Many well-known monsters are of the DARK attribute, such as \"Dark Armed Dragon\" and \"Jinzo\". <br><br> Being one of the most versatile and common Attributes, DARK monsters and the cards akin to them can work with many different Deck Types, and rarely does a typical deck lack at least one.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687068439/YGOWiki/DarkEN_vyiivj.png"}]}
+message AllAttributeReply{
+	repeated AttributeDetail Attributes = 1;
+}
+
+//[Example]{"Id":7,"OriginalAttributeId":4,"LanguageId":"en-Us","TranslatedName":"Fire Attribute","TranslatedDescription":"FIRE is an Attribute commonly associated with Pyro, Dragon, Dinosaur and Machine-Type monsters, though it is not uncommon in other Types such as Warrior or even Beast. <br><br> FIRE monsters tend to focus on inflicting Effect damage to the opponent, a mechanic traditionally known as \"Burning\". In recent years, a trend among FIRE monsters is that many of them have 200 DEF.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687069789/YGOWiki/FireEN_hnvce0.png"}
+message AttributeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalAttributeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+// [Example]{"BanlistTypes":[{"Id":1,"OriginalBanlistTypeId":1,"LanguageId":"en-Us","TranslatedName":"Forbidden","TranslatedDescription":"Cards that are “Forbidden” cannot be used in your Main Deck, Extra Deck, or Side Deck.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687279618/YGOWiki/Forbidden_ajt2yg.png"}]}
+message AllBanlistReply{
+	repeated BanlistTypeDetail BanlistTypes = 1;
+}
+
+//[Example]{"Id":3,"OriginalBanlistTypeId":2,"LanguageId":"en-Us","TranslatedName":"Limited","TranslatedDescription":"You can only have 1 copy maximum of a “Limited” card in your Main Deck, Extra Deck, and Side Deck combined.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687279285/YGOWiki/Limited_ddsyoa.png"}
+message BanlistTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalBanlistTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+//[Example]{"MonsterCardTypes":[{"Id":1,"OriginalMonsterCardTypeId":1,"LanguageId":"en-Us","TranslatedName":"Normal Monster","TranslatedDescription":"Normal Monsters, colored yellow, are Main Deck monsters with no monster effects. In the card description box (which contains the effect on Effect Monsters), Normal Monsters include a brief description of its lore.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687300713/YGOWiki/NormalMonsterEN_sj6gvx.png"}]}
+message AllMonsterCardTypeReply{
+	repeated MonsterCardDetail MonsterCardTypes = 1;
+}
+
+//[Example]{"Id":5,"OriginalMonsterCardTypeId":3,"LanguageId":"en-Us","TranslatedName":"Fusion Monster","TranslatedDescription":"The color of their card frame is violet. These cards are placed in the Extra Deck. To be properly Special Summoned, Fusion Monsters must first be Fusion Summoned using a card like Polymerization (unless otherwise specified). <br><br> Most Fusion Monsters have a set of Fusion Materials, which are listed on the first line of the card's text. These are the materials used to perform the Summon of that monster.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687362948/YGOWiki/FusionMonsterEN_fnriac.png"}
+message MonsterCardDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalMonsterCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+//[Example]{"MonsterTypes":[{"Id":1,"OriginalMonsterTypeId":1,"LanguageId":"en-Us","TranslatedName":"Aqua","TranslatedDescription":"Is a monster Type that has power over water or ice, such as Mobius the Frost Monarch. They may also represent aquatic or amphibious creatures that do not fall under the category of Fish or Sea Serpent, like sea-borne mammals and amphibians. In the same respect, most Aqua-Type monsters are WATER monsters, though Aqua-Type monsters for almost every other Attribute do exist. Aqua-Type effects are varied, but many of the best focus on hand control.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687373480/YGOWiki/Aqua-MD_xqxjvo.png"}]}
+message AllMonsterTypeReply{
+	repeated MonsterTypeDetail MonsterTypes = 1;
+}
+
+//[Example]{"Id":3,"OriginalMonsterTypeId":2,"LanguageId":"en-Us","TranslatedName":"Beast","TranslatedDescription":"Is a Type of monster consisting mainly of wild animals. They are typically EARTH Attribute monsters, although LIGHT and FIRE monsters of this type are not uncommon. Beast-Type monsters are often overlooked, but often have great utility. Because they are relatively low in number compared to more popular monster types, there is not one specific theme or strategy common to them, though many have effects that assist them during the Battle Phase. ","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687373480/YGOWiki/Beast-MD_zrduxe.png"}
+message MonsterTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalMonsterTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+//[Example]{"Rarities":[{"Id":1,"OriginalRarityTypeId":1,"LanguageId":"en-Us","TranslatedDescription":"Common","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687459843/YGOWiki/CommonCard_jkuict.png"}]}
+message AllRarityReply{
+	repeated RarityTypeDetail Rarities = 1;
+}
+
+//[Example]{"Id":5,"OriginalRarityTypeId":3,"LanguageId":"en-Us","TranslatedDescription":"Super Rare","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687459842/YGOWiki/SuperRareCard_pcmwzp.png"}
+message RarityTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalRarityTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedDescription = 4;
+	google.protobuf.StringValue ImageExample = 5;
+}
+
+//[Example]{"SpecialMonsterTypes":[{"Id":1,"OriginalSpecialMonsterTypeId":1,"LanguageId":"en-Us","TranslatedName":"Gemini","TranslatedDescription":"They are treated as Normal Monsters on the field and in the GY, and can gain their effects by performing an additional Normal Summon on them while they are face-up on the field.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687461144/YGOWiki/GeminiEN_fgbuya.png"}]}
+message AllSpecialMonsterTypeReply{
+	repeated SpecialMonsterTypeDetail SpecialMonsterTypes = 1;
+}
+
+//[Example]{"Id":5,"OriginalSpecialMonsterTypeId":3,"LanguageId":"en-Us","TranslatedName":"Spirit","TranslatedDescription":"Effect Monsters with the ability \"Spirit\". Each of this type of monster has an effect that returns it to its owner's hand during the End Phase of the turn it is Normal Summoned or flipped face-up (or the turn it is Special Summoned in case of Spirit monsters that must be Special Summoned).","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687461915/YGOWiki/SpiritEN_qingnx.png"}
+message SpecialMonsterTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalSpecialMonsterTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+//[Example]{"SpellTypes":[{"Id":1,"OriginalSpellCardTypeId":1,"LanguageId":"en-Us","TranslatedName":"Normal Spell Card","TranslatedDescription":"Which have no symbol on printed cards. Some video games use an empty symbol in menus for filtering and sorting cards.  is a Spell Speed 1 Spell Card, so it cannot chain to other effects, even those of other Normal Spell Cards, but can be chained to by Spell Speed 2 or Spell Speed 3 cards. The turn player may Set a Normal Spell Card and activate it on the same turn, which is useful if the player plans to use effects of cards that discard from your hand (such as \"Card Destruction\" and \"Morphing Jar\") to keep their useful Spell Cards from being discarded.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687672841/NormalSpellEN_tqbz9l.png"}]}
+message AllSpellTypeReply{
+	repeated SpellTypeDetail SpellTypes = 1;
+}
+
+//[Example]{"Id":3,"OriginalSpellCardTypeId":2,"LanguageId":"en-Us","TranslatedName":"Continuous Spell Card","TranslatedDescription":"Which have an infinity symbol. Is a Spell Speed 1 Spell Card that stays on the field once it is activated. The effects of most Continuous Spell Cards do not start a Chain, but there are some which do, for example \"Soul Absorption\" has a Trigger-like Effect, and \"Valhalla, Hall of the Fallen\" has an Ignition-like Effect.","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687673279/ContinuousSpellEN_duu8io.png"}
+message SpellTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalSpellCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
+
+//[Example]{"TrapTypes":[{"Id":1,"OriginalTrapCardTypeId":1,"LanguageId":"en-Us","TranslatedName":"Normal Trap Card","TranslatedDescription":"Which have no symbol on printed cards. Some video games use an empty symbol in menus for filtering and sorting cards. Are Spell Speed 2, and can be used in response to the effects of everything that is classified as Spell Speed 1, such as Effect Monsters, and Spell Cards, or Spell Speed 2, which include Quick Effects, most other Trap Cards, and Quick-Play Spell Cards. Trap Cards have to be Set face-down and can be activated after the turn you Set it (starting from the opponent's Draw Phase). ","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687676069/NormalTrapEN_cja6v8.png"}]}
+message AllTrapTypeReply{
+	repeated TrapTypeDetail TrapTypes = 1;
+}
+
+//[Example]{"Id":3,"OriginalTrapCardTypeId":2,"LanguageId":"en-Us","TranslatedName":"Continuous Trap Card","TranslatedDescription":"Which have an infinity symbol. are Trap Cards that stay on the field after activation. The effect(s) of these cards will remain active until the owner cannot maintain the cost or condition(s) indicated on the card (if any) OR it is destroyed. Some Continuous Trap Cards become monsters when activated, known as Trap Monsters. An example of a Trap Monster is \"Metal Reflect Slime\"","ImageExample":"https://res.cloudinary.com/imgresd/image/upload/v1687676473/ContinuousTrapEN_un1y28.png"}
+message TrapTypeDetail{
+	google.protobuf.Int32Value  Id = 1;
+	google.protobuf.Int32Value  OriginalTrapCardTypeId = 2;
+	google.protobuf.StringValue LanguageId = 3;
+	google.protobuf.StringValue TranslatedName = 4;
+	google.protobuf.StringValue TranslatedDescription = 5;
+	google.protobuf.StringValue ImageExample = 6;
+}
