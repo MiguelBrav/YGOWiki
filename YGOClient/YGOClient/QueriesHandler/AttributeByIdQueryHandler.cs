@@ -1,4 +1,5 @@
-﻿using Grpc.Net.Client;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using ServerYGO;
@@ -8,32 +9,22 @@ using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
 {
-     public class AllTypeCardsQueryHandler : IRequestHandler<AllTypeCardsQuery, ApiResponse>
+    public class AttributeByIdQueryHandler : IRequestHandler<AttributeByIdQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
 
-        public AllTypeCardsQueryHandler(YGOWiki.YGOWikiClient client)
+        public AttributeByIdQueryHandler(YGOWiki.YGOWikiClient client)
         {
             _client = client;
         }
 
-        public async Task<ApiResponse> Handle(AllTypeCardsQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(AttributeByIdQuery request, CancellationToken cancellationToken)
         {
             ApiResponse grpcResponse = new ApiResponse();
 
             try
             {
-                AllTypeCardsReply response = await _client.GetAllTypeCardsAsync(new ByLanguageId { LanguageId = request.LanguageId });
-
-                if(response.CardTypes.Count == 0)
-                {
-                    grpcResponse.StatusCode = 204;
-                    grpcResponse.ResponseMessage = "No content";
-                    grpcResponse.Response = true;
-
-                    return grpcResponse;
-
-                }
+                AttributeDetail response = await _client.GetAttributeAsync(new ByLanguageIdAndId { LanguageId = request.LanguageId, Id = request.Id });
 
                 var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
                 {
@@ -46,9 +37,15 @@ namespace YGOClient.QueriesHandler
                 grpcResponse.ResponseMessage = jsonResponse;
                 grpcResponse.Response = true;
             }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Cancelled && !string.IsNullOrEmpty(ex.Status.Detail))
+            {
+                grpcResponse.StatusCode = 404;
+                grpcResponse.ResponseMessage = ex.Status.Detail;
+                grpcResponse.Response = false;
+            }
             catch (Exception)
             {
-                grpcResponse.StatusCode = 500; 
+                grpcResponse.StatusCode = 500;
                 grpcResponse.ResponseMessage = "Error";
                 grpcResponse.Response = false;
             }

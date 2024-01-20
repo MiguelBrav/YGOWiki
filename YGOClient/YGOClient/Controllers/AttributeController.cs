@@ -12,28 +12,28 @@ namespace YGOClient.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TypeCardController : ControllerBase
+    public class AttributeController : ControllerBase
     {
 
         private readonly IMediator _mediator;
 
-        public TypeCardController(IMediator mediator)
+        public AttributeController(IMediator mediator)
         {
             _mediator = mediator;
         }
         /// <summary>
-        /// Get all type cards translated by languageId
+        /// Get all attributes translated by languageId
         /// </summary>
         [HttpGet]
         [Route("all/{languageId}")]
-        public async Task<IActionResult> GetAllTypeCards(string languageId)
+        public async Task<IActionResult> GetAllAttributes(string languageId)
         {
             if (languageId == null)
             {
                 return BadRequest();
             }
 
-            AllTypeCardsQuery query = new AllTypeCardsQuery()
+            AllAttributesQuery query = new AllAttributesQuery()
             {
                 LanguageId = languageId
             };
@@ -54,21 +54,21 @@ namespace YGOClient.Controllers
         }
 
         /// <summary>
-        /// Get type card translated by languageId and typeId
+        /// Get attribute translated by languageId and typeId
         /// </summary>
         [HttpGet]
-        [Route("{typeCardId}/{languageId}")]
-        public async Task<IActionResult> GetTypeCardById(string languageId, int typeCardId)
+        [Route("{attributeId}/{languageId}")]
+        public async Task<IActionResult> GetAttributeById(string languageId, int attributeId)
         {
             if (languageId == null)
             {
                 return BadRequest();
             }
 
-            TypeCardByIdQuery query = new TypeCardByIdQuery()
+            AttributeByIdQuery query = new AttributeByIdQuery()
             {
                 LanguageId = languageId,
-                Id = typeCardId
+                Id = attributeId
             };
 
             ApiResponse response = await _mediator.Send(query);

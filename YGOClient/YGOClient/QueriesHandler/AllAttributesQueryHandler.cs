@@ -8,24 +8,24 @@ using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
 {
-     public class AllTypeCardsQueryHandler : IRequestHandler<AllTypeCardsQuery, ApiResponse>
+     public class AllAttributesQueryHandler : IRequestHandler<AllAttributesQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
 
-        public AllTypeCardsQueryHandler(YGOWiki.YGOWikiClient client)
+        public AllAttributesQueryHandler(YGOWiki.YGOWikiClient client)
         {
             _client = client;
         }
 
-        public async Task<ApiResponse> Handle(AllTypeCardsQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(AllAttributesQuery request, CancellationToken cancellationToken)
         {
             ApiResponse grpcResponse = new ApiResponse();
 
             try
             {
-                AllTypeCardsReply response = await _client.GetAllTypeCardsAsync(new ByLanguageId { LanguageId = request.LanguageId });
+                AllAttributeReply response = await _client.GettAllAttributesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                if(response.CardTypes.Count == 0)
+                if(response.Attributes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
                     grpcResponse.ResponseMessage = "No content";
