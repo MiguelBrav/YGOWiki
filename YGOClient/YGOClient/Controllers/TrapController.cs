@@ -12,28 +12,28 @@ namespace YGOClient.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MonsterCardController : ControllerBase
+    public class TrapController : ControllerBase
     {
 
         private readonly IMediator _mediator;
 
-        public MonsterCardController(IMediator mediator)
+        public TrapController(IMediator mediator)
         {
             _mediator = mediator;
         }
         /// <summary>
-        /// Get all monster card types translated by languageId
+        /// Get all trap types translated by languageId
         /// </summary>
         [HttpGet]
         [Route("all/{languageId}")]
-        public async Task<IActionResult> GetAllMonsterCards(string languageId)
+        public async Task<IActionResult> GetAllTrapsTypes(string languageId)
         {
             if (languageId == null)
             {
                 return BadRequest();
             }
 
-            AllMonsterCardsQuery query = new AllMonsterCardsQuery()
+            AllTrapsQuery query = new AllTrapsQuery()
             {
                 LanguageId = languageId
             };
@@ -54,21 +54,21 @@ namespace YGOClient.Controllers
         }
 
         /// <summary>
-        /// Get monster card type translated by languageId and typeId
+        /// Get trap type translated by languageId and typeId
         /// </summary>
         [HttpGet]
-        [Route("{monsterCardId}/{languageId}")]
-        public async Task<IActionResult> GetMonsterCardById(string languageId, int monsterCardId)
+        [Route("{trapTypeId}/{languageId}")]
+        public async Task<IActionResult> GetTrapTypeById(string languageId, int trapTypeId)
         {
             if (languageId == null)
             {
                 return BadRequest();
             }
 
-            MonsterCardByIdQuery query = new MonsterCardByIdQuery()
+            TrapByIdQuery query = new TrapByIdQuery()
             {
                 LanguageId = languageId,
-                Id = monsterCardId
+                Id = trapTypeId
             };
 
             ApiResponse response = await _mediator.Send(query);
