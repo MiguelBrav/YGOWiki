@@ -7,6 +7,9 @@ Database for the project, tables, data and implementing multilanguage.
 ### YGOWikiGRPC ###
 gRPC Server using .net to consult information from Yu-Gi-Oh!
 
+### YGOClient ###
+REST API gateway consuming the gRPC server.
+
 ## Usage/Examples for YGOWikiGRPC
 
 
@@ -31,12 +34,26 @@ You can also try it, using Kreya. [Kreya - Calling APIs made easy](https://kreya
 ![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1691386768/Github/Kreya02_jrzlpm.png)
 
 
+## Usage/Examples for YGOClient
 
 
+An API composed solely of GET requests, with Swagger documentation available, that connects to a gRPC server to retrieve information.
+The available languages ​​are es-mx (Spanish - Español) and en-us (English - Ingles)
+YGO Client
+```
+curl -X 'GET' \
+  'https://ygoclient.application-service.work/Attribute/all/es-mx' \
+  -H 'accept: */*'
+```
+![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1706388137/Github/x9tns28fs6l0ecnvdypw.png)
 
+![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1706388209/Github/fd0b5b13mpddl9zfrj13.png)
 
+![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1706388237/Github/dvjsmmq0khjm29iidian.png)
 
-For more information, you can check this [gRPC-Web in ASP.NET Core gRPC apps](https://learn.microsoft.com/en-us/aspnet/core/grpc/grpcweb?view=aspnetcore-7.0)
+You can consume the API using this URL: "https://ygoclient.application-service.work/".
+
+For more information, you can check this swagger doc online about the ygo client. [YGO Client - Swagger Documentation](https://ygoclient.application-service.work/swagger/index.html)
 
 
 ## Running Tests
