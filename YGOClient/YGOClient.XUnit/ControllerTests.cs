@@ -615,7 +615,6 @@ namespace YGOClient.XUnit
         }
         #endregion
 
-
         #region "Rarity Controller"
         [Theory]
         [InlineData("es-es")] // Invalid language
@@ -748,6 +747,304 @@ namespace YGOClient.XUnit
             var mediatorMock = new Mock<IMediator>();
             var query = new RarityByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new RarityTypeDetail()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+        #endregion
+
+        #region "SpecialMonster Controller"
+        [Theory]
+        [InlineData("es-es")] // Invalid language
+        [InlineData("")]  // Invalid language
+        public async Task GetAllSpecialMonsters_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllSpecialMonsterCardsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 204 };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllSpecialMonsters_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllSpecialMonsterCardsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllSpecialMonsters_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllSpecialMonsterCardsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpecialMonsterTypeReply()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-es", 99)] // Invalid language and Id
+        [InlineData("", 88)]  // Invalid language  and Id
+        public async Task GetSpecialMonster_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new SpecialMonsterCardByIdQuery { LanguageId = languageId, Id = id };
+            RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
+            var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetSpecialMonster_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new SpecialMonsterCardByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetSpecialMonster_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new SpecialMonsterCardByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new SpecialMonsterTypeDetail()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+        #endregion
+
+        #region "Spell Controller"
+        [Theory]
+        [InlineData("es-es")] // Invalid language
+        [InlineData("")]  // Invalid language
+        public async Task GetAllSpells_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllSpellsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 204 };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllSpells_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllSpellsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllSpells_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllSpellsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpellTypeReply()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-es", 109)] // Invalid language and Id
+        [InlineData("", 200)]  // Invalid language  and Id
+        public async Task GetSpell_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new SpellByIdQuery { LanguageId = languageId, Id = id };
+            RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
+            var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetSpell_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new SpellByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetSpell_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new SpellByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new SpellTypeDetail()) };
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
