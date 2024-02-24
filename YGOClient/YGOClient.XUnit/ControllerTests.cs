@@ -1061,5 +1061,303 @@ namespace YGOClient.XUnit
 
         }
         #endregion
+
+        #region "Trap Controller"
+        [Theory]
+        [InlineData("es-es")] // Invalid language
+        [InlineData("")]  // Invalid language
+        public async Task GetAllTraps_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTrapsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 204 };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllTraps_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTrapsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllTraps_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTrapsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTrapTypeReply()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-es", 111)] // Invalid language and Id
+        [InlineData("", 220)]  // Invalid language  and Id
+        public async Task GetTrap_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new TrapByIdQuery { LanguageId = languageId, Id = id };
+            RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
+            var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetTrap_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new TrapByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetTrap_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new TrapByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new TrapTypeDetail()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+        #endregion
+
+        #region "TypeCard Controller"
+        [Theory]
+        [InlineData("es-es")] // Invalid language
+        [InlineData("")]  // Invalid language
+        public async Task GetAllTypeCards_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 204 };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllTypeCards_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx")]
+        [InlineData("en-us")]
+        public async Task GetAllTypeCards_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsQuery { LanguageId = languageId };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTypeCardsReply()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-es", 112)] // Invalid language and Id
+        [InlineData("", 2222)]  // Invalid language  and Id
+        public async Task GetTypeCard_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new TypeCardByIdQuery { LanguageId = languageId, Id = id };
+            RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
+            var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetTypeCard_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new TypeCardByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+
+        [Theory]
+        [InlineData("es-mx", 1)]
+        [InlineData("en-us", 1)]
+        public async Task GetTypeCard_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new TypeCardByIdQuery { LanguageId = languageId, Id = id };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new CardTypeDetail()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+        #endregion
     }
 }
