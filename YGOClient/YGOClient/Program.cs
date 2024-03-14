@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using ServerYGO;
 using System.Reflection;
+using YGOClient.Interfaces;
+using YGOClient.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
+
+builder.Services.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
 
 builder.Services.AddGrpcClient<YGOWiki.YGOWikiClient>(o =>
 {

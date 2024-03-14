@@ -54,6 +54,45 @@ namespace YGOClient.Controllers
         }
 
         /// <summary>
+        /// Get paginated attributes translated by languageId, page and size
+        /// </summary>
+        [HttpGet]
+        [Route("all/{languageId}/page/{pageId}/size/{pageSize}")]
+        public async Task<IActionResult> GetAttributesPageById(string languageId, int pageId, int pageSize)
+        {
+            if (languageId == null)
+            {
+                return BadRequest();
+            }
+
+            if (pageSize == 0)
+            {
+                return BadRequest("Page size must be greater than 0");
+            }
+
+            AllAttributesPageQuery query = new AllAttributesPageQuery()
+            {
+                LanguageId = languageId,
+                PageId = pageId,
+                PageSize = pageSize
+            };
+
+            ApiResponse response = await _mediator.Send(query);
+
+            if (response.StatusCode == 204)
+            {
+                return StatusCode(response.StatusCode);
+            }
+            if (response.Response == null | response.Response is false)
+            {
+                return StatusCode(response.StatusCode, response.ResponseMessage);
+            }
+
+            return StatusCode(response.StatusCode, response.ResponseMessage);
+
+        }
+
+        /// <summary>
         /// Get attribute translated by languageId and typeId
         /// </summary>
         [HttpGet]
