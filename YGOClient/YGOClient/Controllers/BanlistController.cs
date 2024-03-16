@@ -58,7 +58,7 @@ namespace YGOClient.Controllers
         /// </summary>
         [HttpGet]
         [Route("all/{languageId}/page/{pageId}/size/{pageSize}")]
-        public async Task<IActionResult> GetAttributesPageById(string languageId, int pageId, int pageSize)
+        public async Task<IActionResult> GetBanlistsPageById(string languageId, int pageId, int pageSize)
         {
             if (languageId == null)
             {
