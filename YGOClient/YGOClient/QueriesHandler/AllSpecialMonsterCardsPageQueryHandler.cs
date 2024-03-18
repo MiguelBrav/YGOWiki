@@ -10,27 +10,27 @@ using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
 {
-     public class AllMonsterCardsPageQueryHandler : IRequestHandler<AllMonsterCardsPageQuery, ApiResponse>
+     public class AllSpecialMonsterCardsPageQueryHandler : IRequestHandler<AllSpecialMonsterCardsPageQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
-        private readonly IPaginationService<MonsterCardDetail> _paginationService;
-        public AllMonsterCardsPageQueryHandler(YGOWiki.YGOWikiClient client, IPaginationService<MonsterCardDetail> paginationService)
+        private readonly IPaginationService<SpecialMonsterTypeDetail> _paginationService;
+        public AllSpecialMonsterCardsPageQueryHandler(YGOWiki.YGOWikiClient client, IPaginationService<SpecialMonsterTypeDetail> paginationService)
         {
             _client = client;
             _paginationService = paginationService;
         }
 
-        public async Task<ApiResponse> Handle(AllMonsterCardsPageQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(AllSpecialMonsterCardsPageQuery request, CancellationToken cancellationToken)
         {
             ApiResponse grpcResponse = new ApiResponse();
 
             try
             {
-                AllMonsterCardTypeReply response = await _client.GetAllMonsterCardTypesAsync(new ByLanguageId { LanguageId = request.LanguageId });
+                AllSpecialMonsterTypeReply response = await _client.GetAllSpecialMonstersAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<MonsterCardDetail> monsterCards = _paginationService.GetPagedData(response.MonsterCardTypes, request.PageId, request.PageSize);
-
-                if (response.MonsterCardTypes.Count == 0)
+                RepeatedField<SpecialMonsterTypeDetail> specialMonsters =  _paginationService.GetPagedData(response.SpecialMonsterTypes, request.PageId, request.PageSize);
+                           
+                if (response.SpecialMonsterTypes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
                     grpcResponse.ResponseMessage = "No content";
@@ -41,9 +41,9 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.MonsterCardTypes.Clear();
+                response.SpecialMonsterTypes.Clear();
 
-                response.MonsterCardTypes.AddRange(monsterCards);
+                response.SpecialMonsterTypes.AddRange(specialMonsters);
 
                 var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
                 {
@@ -64,7 +64,7 @@ namespace YGOClient.QueriesHandler
             }
             catch (Exception)
             {
-                grpcResponse.StatusCode = 500;
+                grpcResponse.StatusCode = 500; 
                 grpcResponse.ResponseMessage = "Error";
                 grpcResponse.Response = false;
             }
