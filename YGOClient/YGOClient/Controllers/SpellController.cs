@@ -54,6 +54,45 @@ namespace YGOClient.Controllers
         }
 
         /// <summary>
+        /// Get paginated spells translated by languageId, page and size
+        /// </summary>
+        [HttpGet]
+        [Route("all/{languageId}/page/{pageId}/size/{pageSize}")]
+        public async Task<IActionResult> GetSpellsPageById(string languageId, int pageId, int pageSize)
+        {
+            if (languageId == null)
+            {
+                return BadRequest();
+            }
+
+            if (pageSize == 0)
+            {
+                return BadRequest("Page size must be greater than 0");
+            }
+
+            AllSpellsPageQuery query = new AllSpellsPageQuery()
+            {
+                LanguageId = languageId,
+                PageId = pageId,
+                PageSize = pageSize
+            };
+
+            ApiResponse response = await _mediator.Send(query);
+
+            if (response.StatusCode == 204)
+            {
+                return StatusCode(response.StatusCode);
+            }
+            if (response.Response == null | response.Response is false)
+            {
+                return StatusCode(response.StatusCode, response.ResponseMessage);
+            }
+
+            return StatusCode(response.StatusCode, response.ResponseMessage);
+
+        }
+
+        /// <summary>
         /// Get spell type translated by languageId and typeId
         /// </summary>
         [HttpGet]
