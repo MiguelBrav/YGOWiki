@@ -65,9 +65,14 @@ namespace YGOClient.Controllers
                 return BadRequest();
             }
 
-            if (pageSize == 0)
+            if (pageSize <= 0)
             {
                 return BadRequest("Page size must be greater than 0");
+            }
+
+            if (pageId <= 0)
+            {
+                return BadRequest("PageId must be greater than 0");
             }
 
             AllMonsterCardsPageQuery query = new AllMonsterCardsPageQuery()
