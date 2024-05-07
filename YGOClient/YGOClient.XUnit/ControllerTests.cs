@@ -2467,6 +2467,154 @@ namespace YGOClient.XUnit
 
         }
 
+        // Pagination Tests
+        [Theory]
+        [InlineData("es-es", 1, 6)] // Invalid language
+        [InlineData("", 1, 6)]  // Invalid language
+        public async Task GetAllTypeCardsPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
+            var apiResponse = new ApiResponse { StatusCode = 204 };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("es-mx", 0, 8)]
+        [InlineData("en-us", 0, 8)]
+        public async Task GetAllTypeCardsPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
+            var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 2, 0)]
+        [InlineData("en-us", 2, 0)]
+        public async Task GetAllTypeCardsPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
+            var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+
+        [Theory]
+        [InlineData("es-mx", 102, 5)]
+        [InlineData("en-us", 102, 5)]
+        public async Task GetAllTypeCardsPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
+            var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 1, 5)]
+        [InlineData("en-us", 1, 5)]
+        public async Task GetAllTypeCardsPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
+            var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+
+        [Theory]
+        [InlineData("es-mx", 1, 5)]
+        [InlineData("en-us", 1, 5)]
+        public async Task GetAllTypeCardsPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTypeCardsReply()) };
+
+            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+
+            // Act
+            var response = await mediatorMock.Object.Send(query);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.ResponseMessage);
+            Assert.Equal(apiResponse.StatusCode, response.StatusCode);
+            Assert.Equal(apiResponse.ResponseMessage, response.ResponseMessage);
+            Assert.IsType<string>(apiResponse.ResponseMessage);
+            Assert.IsType<ApiResponse>(response);
+
+        }
+        // Pagination Tests
+
         [Theory]
         [InlineData("es-es", 112)] // Invalid language and Id
         [InlineData("", 2222)]  // Invalid language  and Id
