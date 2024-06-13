@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,7 +29,9 @@ namespace YGOClient.QueriesHandler
             {
                 AllMonsterCardTypeReply response = await _client.GetAllMonsterCardTypesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<MonsterCardDetail> monsterCards = _paginationService.GetPagedData(response.MonsterCardTypes, request.PageId, request.PageSize);
+                //RepeatedField<MonsterCardDetail> monsterCards = _paginationService.GetPagedData(response.MonsterCardTypes, request.PageId, request.PageSize);
+                PagedResult<MonsterCardDetail> monsterCards = _paginationService.GetPagedResult(response.MonsterCardTypes, request.PageId, request.PageSize);
+
 
                 if (response.MonsterCardTypes.Count == 0)
                 {
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.MonsterCardTypes.Clear();
+                //response.MonsterCardTypes.Clear();
 
-                response.MonsterCardTypes.AddRange(monsterCards);
+                //response.MonsterCardTypes.AddRange(monsterCards);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(monsterCards, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

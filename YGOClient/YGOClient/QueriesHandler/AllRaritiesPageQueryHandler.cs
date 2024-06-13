@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,8 +29,10 @@ namespace YGOClient.QueriesHandler
             {
                 AllRarityReply response = await _client.GetAllRaritiesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<RarityTypeDetail> raritiesPage =  _paginationService.GetPagedData(response.Rarities, request.PageId, request.PageSize);
-                           
+                //RepeatedField<RarityTypeDetail> raritiesPage =  _paginationService.GetPagedData(response.Rarities, request.PageId, request.PageSize);
+                PagedResult<RarityTypeDetail> raritiesPage = _paginationService.GetPagedResult(response.Rarities, request.PageId, request.PageSize);
+
+
                 if (response.Rarities.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.Rarities.Clear();
+                //response.Rarities.Clear();
 
-                response.Rarities.AddRange(raritiesPage);
+                //response.Rarities.AddRange(raritiesPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(raritiesPage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

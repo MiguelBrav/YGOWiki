@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,8 +29,10 @@ namespace YGOClient.QueriesHandler
             {
                 AllSpellTypeReply response = await _client.GetAllSpellCardsAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<SpellTypeDetail> spellsPage =  _paginationService.GetPagedData(response.SpellTypes, request.PageId, request.PageSize);
-                           
+                //RepeatedField<SpellTypeDetail> spellsPage =  _paginationService.GetPagedData(response.SpellTypes, request.PageId, request.PageSize);
+                PagedResult<SpellTypeDetail> spellsPage = _paginationService.GetPagedResult(response.SpellTypes, request.PageId, request.PageSize);
+
+
                 if (response.SpellTypes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.SpellTypes.Clear();
+                //response.SpellTypes.Clear();
 
-                response.SpellTypes.AddRange(spellsPage);
+                //response.SpellTypes.AddRange(spellsPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(spellsPage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

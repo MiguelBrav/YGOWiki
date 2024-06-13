@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,7 +29,9 @@ namespace YGOClient.QueriesHandler
             {
                 AllBanlistReply response = await _client.GetAllBanlistAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<BanlistTypeDetail> banlistPage = _paginationService.GetPagedData(response.BanlistTypes, request.PageId, request.PageSize);
+                //RepeatedField<BanlistTypeDetail> banlistPage = _paginationService.GetPagedData(response.BanlistTypes, request.PageId, request.PageSize);
+                PagedResult<BanlistTypeDetail> banlistPage = _paginationService.GetPagedResult(response.BanlistTypes, request.PageId, request.PageSize);
+
 
                 if (response.BanlistTypes.Count == 0)
                 {
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.BanlistTypes.Clear();
+                //response.BanlistTypes.Clear();
 
-                response.BanlistTypes.AddRange(banlistPage);
+                //response.BanlistTypes.AddRange(banlistPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(banlistPage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

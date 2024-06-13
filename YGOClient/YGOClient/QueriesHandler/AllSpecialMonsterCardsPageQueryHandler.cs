@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,8 +29,10 @@ namespace YGOClient.QueriesHandler
             {
                 AllSpecialMonsterTypeReply response = await _client.GetAllSpecialMonstersAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<SpecialMonsterTypeDetail> specialMonsters =  _paginationService.GetPagedData(response.SpecialMonsterTypes, request.PageId, request.PageSize);
-                           
+                //RepeatedField<SpecialMonsterTypeDetail> specialMonsters =  _paginationService.GetPagedData(response.SpecialMonsterTypes, request.PageId, request.PageSize);
+                PagedResult<SpecialMonsterTypeDetail> specialMonsters = _paginationService.GetPagedResult(response.SpecialMonsterTypes, request.PageId, request.PageSize);
+
+
                 if (response.SpecialMonsterTypes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.SpecialMonsterTypes.Clear();
+                //response.SpecialMonsterTypes.Clear();
 
-                response.SpecialMonsterTypes.AddRange(specialMonsters);
+                //response.SpecialMonsterTypes.AddRange(specialMonsters);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(specialMonsters, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

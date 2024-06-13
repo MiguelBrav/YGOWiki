@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,8 +29,10 @@ namespace YGOClient.QueriesHandler
             {
                 AllTypeCardsReply response = await _client.GetAllTypeCardsAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<CardTypeDetail> trapsPage =  _paginationService.GetPagedData(response.CardTypes, request.PageId, request.PageSize);
-                           
+                //RepeatedField<CardTypeDetail> trapsPage =  _paginationService.GetPagedData(response.CardTypes, request.PageId, request.PageSize);
+
+                PagedResult<CardTypeDetail> typeCardsPage = _paginationService.GetPagedResult(response.CardTypes, request.PageId, request.PageSize);
+
                 if (response.CardTypes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.CardTypes.Clear();
+                //response.CardTypes.Clear();
 
-                response.CardTypes.AddRange(trapsPage);
+                //response.CardTypes.AddRange(typeCardsPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(typeCardsPage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

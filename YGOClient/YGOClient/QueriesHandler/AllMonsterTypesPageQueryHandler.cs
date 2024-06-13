@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,7 +29,9 @@ namespace YGOClient.QueriesHandler
             {
                 AllMonsterTypeReply response = await _client.GetAllMonsterTypesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<MonsterTypeDetail> banlistPage = _paginationService.GetPagedData(response.MonsterTypes, request.PageId, request.PageSize);
+                //RepeatedField<MonsterTypeDetail> banlistPage = _paginationService.GetPagedData(response.MonsterTypes, request.PageId, request.PageSize);
+                PagedResult<MonsterTypeDetail> monsterTypePage = _paginationService.GetPagedResult(response.MonsterTypes, request.PageId, request.PageSize);
+
 
                 if (response.MonsterTypes.Count == 0)
                 {
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.MonsterTypes.Clear();
+                //response.MonsterTypes.Clear();
 
-                response.MonsterTypes.AddRange(banlistPage);
+                //response.MonsterTypes.AddRange(banlistPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(monsterTypePage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

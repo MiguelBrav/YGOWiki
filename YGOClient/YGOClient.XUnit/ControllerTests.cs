@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Xunit;
 using YGOClient.Controllers;
 using YGOClient.DTO.APIResponse;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.XUnit
@@ -221,7 +222,8 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllAttributeReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllAttributeReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<AttributeDetail>()) };
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -517,7 +519,8 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllBanlistReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllBanlistReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<BanlistTypeDetail>()) };
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -814,7 +817,8 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterCardTypeReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterCardTypeReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<MonsterCardDetail>()) };
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -1112,7 +1116,8 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterTypeReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterTypeReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<MonsterTypeDetail>()) };
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -1409,7 +1414,9 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllRarityReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllRarityReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<RarityTypeDetail>()) };
+
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -1706,7 +1713,9 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpecialMonsterTypeReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpecialMonsterTypeReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<SpecialMonsterTypeDetail>()) };
+
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -2003,7 +2012,9 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpellTypeReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpellTypeReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<SpellTypeDetail>()) };
+
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -2300,7 +2311,9 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTrapTypeReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTrapTypeReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<TrapTypeDetail>()) };
+
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 
@@ -2597,7 +2610,9 @@ namespace YGOClient.XUnit
             // Arrange
             var mediatorMock = new Mock<IMediator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
-            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTypeCardsReply()) };
+            //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTypeCardsReply()) };
+            var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<CardTypeDetail>()) };
+
 
             mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
 

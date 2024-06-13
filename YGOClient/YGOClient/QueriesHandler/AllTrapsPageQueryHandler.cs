@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,8 +29,9 @@ namespace YGOClient.QueriesHandler
             {
                 AllTrapTypeReply response = await _client.GetAllTrapCardsAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<TrapTypeDetail> trapsPage =  _paginationService.GetPagedData(response.TrapTypes, request.PageId, request.PageSize);
-                           
+                //RepeatedField<TrapTypeDetail> trapsPage =  _paginationService.GetPagedData(response.TrapTypes, request.PageId, request.PageSize);
+                PagedResult<TrapTypeDetail> trapsPage = _paginationService.GetPagedResult(response.TrapTypes, request.PageId, request.PageSize);
+
                 if (response.TrapTypes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
@@ -41,11 +43,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.TrapTypes.Clear();
+                //response.TrapTypes.Clear();
 
-                response.TrapTypes.AddRange(trapsPage);
+                //response.TrapTypes.AddRange(trapsPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(trapsPage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping

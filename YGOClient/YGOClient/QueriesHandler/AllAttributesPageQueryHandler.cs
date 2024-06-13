@@ -6,6 +6,7 @@ using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
+using YGOClient.Models;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -28,8 +29,10 @@ namespace YGOClient.QueriesHandler
             {
                 AllAttributeReply response = await _client.GettAllAttributesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
-                RepeatedField<AttributeDetail> attributesPage =  _paginationService.GetPagedData(response.Attributes, request.PageId, request.PageSize);
-                           
+                //RepeatedField<AttributeDetail> attributesPage =  _paginationService.GetPagedData(response.Attributes, request.PageId, request.PageSize);
+                PagedResult<AttributeDetail> attributesPage = _paginationService.GetPagedResult(response.Attributes, request.PageId, request.PageSize);
+
+
                 if (response.Attributes.Count == 0)
                 {
                     grpcResponse.StatusCode = 204;
@@ -41,11 +44,11 @@ namespace YGOClient.QueriesHandler
                 }
 
                 // Pagination
-                response.Attributes.Clear();
+                //response.Attributes.Clear();
 
-                response.Attributes.AddRange(attributesPage);
+                //response.Attributes.AddRange(attributesPage);
 
-                var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+                var jsonResponse = JsonSerializer.Serialize(attributesPage, new JsonSerializerOptions
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
