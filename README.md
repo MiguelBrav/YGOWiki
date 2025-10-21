@@ -62,6 +62,14 @@ To run tests, run ServerTest.cs from project ServerYGO.NUnit
 
 ![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1691386166/Github/UnitTests_zyxrnk.png)
 
+## Versioning
+
+Updated from .NET 6 to .NET 8 (20/10/25)
+
+## Package References
+
+All NuGet packages updated to compatible .NET 8 versions. (20/10/25)
+
 ## Feedback
 
 If you have any feedback, please reach out to me.
