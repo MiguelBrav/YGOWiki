@@ -1,3 +1,4 @@
+using ServerYGO.Automapper;
 using ServerYGO.Data;
 using ServerYGO.Interfaces;
 using ServerYGO.Repositories;
@@ -26,8 +27,9 @@ builder.Services.AddTransient<ITranslatedSpecialMonsterTypeService, TranslatedSp
 builder.Services.AddTransient<ITranslatedSpellCardTypeService, TranslatedSpellCardTypeService>();
 builder.Services.AddTransient<ITranslatedTrapCardTypeService, TranslatedTrapCardTypeService>();
 builder.Services.AddTransient<DbContextClass>();
-builder.Services
-  .AddAutoMapper(typeof(Program).Assembly);
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(YugiMapper));
 
 var app = builder.Build();
 
