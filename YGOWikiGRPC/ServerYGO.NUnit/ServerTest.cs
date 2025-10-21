@@ -91,7 +91,8 @@ namespace ServerYGO.NUnit
                 OriginalBanlistTypeId = 1,
                 LanguageId = languageId,
                 TranslatedName = languageId == _languageEN ? "Forbidden" : "Prohibida",
-                TranslatedDescription = languageId == _languageEN ? "Cards that are “Forbidden” cannot be used in your Main Deck, Extra Deck, or Side Deck." :
+                TranslatedDescription = languageId == _languageEN ?
+                "Cards that are \u0093Forbidden\u0094 cannot be used in your Main Deck, Extra Deck, or Side Deck." :
                 "Las cartas Prohibidas no pueden ser utilizadas, en los Decks, Extra Deck y/o Side Deck.",
                 ImageExample = languageId == _languageEN ? "https://res.cloudinary.com/imgresd/image/upload/v1687279618/YGOWiki/Forbidden_ajt2yg.png" :
                 "https://res.cloudinary.com/imgresd/image/upload/v1687279618/YGOWiki/Forbidden_ajt2yg.png"
@@ -101,7 +102,7 @@ namespace ServerYGO.NUnit
             BanlistTypeDetail banlistType = await _client.GetTypeBanlistAsync(new ByLanguageIdAndId { LanguageId = languageId, Id = banlistId });
 
             Assert.IsNotNull(banlistType);
-            Assert.AreEqual(banlistType, expectedResult);
+            Assert.AreEqual(expectedResult, banlistType);
             Assert.That(banlistType, Is.TypeOf<BanlistTypeDetail>());
 
         }
