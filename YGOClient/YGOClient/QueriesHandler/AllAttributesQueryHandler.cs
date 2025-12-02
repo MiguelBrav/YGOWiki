@@ -1,20 +1,31 @@
 ﻿using Grpc.Net.Client;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
+using YGOClient.Interfaces;
 using YGOClient.Queries;
+using YGOClient.Services;
 
 namespace YGOClient.QueriesHandler
 {
      public class AllAttributesQueryHandler : IRequestHandler<AllAttributesQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
+        private readonly ICacheService _cacheService;
+        private readonly IMemoryCache _cache;
+        private readonly IConfiguration _config;
+        private readonly int _cacheMinutes;
 
-        public AllAttributesQueryHandler(YGOWiki.YGOWikiClient client)
+        public AllAttributesQueryHandler(YGOWiki.YGOWikiClient client, ICacheService cacheService, IConfiguration config, IMemoryCache cache)
         {
             _client = client;
+            _cacheService = cacheService;
+            _config = config;
+            _cacheMinutes = _config.GetValue<int>("CacheSettings:Minutes");
+            _cache = cache;
         }
 
         public async Task<ApiResponse> Handle(AllAttributesQuery request, CancellationToken cancellationToken)
@@ -23,6 +34,13 @@ namespace YGOClient.QueriesHandler
 
             try
             {
+                string cacheKey = await _cacheService.Generate(request);
+
+                if (_cache.TryGetValue(cacheKey, out ApiResponse cachedResponse))
+                {
+                    return cachedResponse;
+                }
+
                 AllAttributeReply response = await _client.GettAllAttributesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
                 if(response.Attributes.Count == 0)
@@ -45,6 +63,9 @@ namespace YGOClient.QueriesHandler
                 grpcResponse.StatusCode = 200;
                 grpcResponse.ResponseMessage = jsonResponse;
                 grpcResponse.Response = true;
+
+                _cache.Set(cacheKey, grpcResponse, TimeSpan.FromMinutes(_cacheMinutes));
+
             }
             catch (Exception)
             {

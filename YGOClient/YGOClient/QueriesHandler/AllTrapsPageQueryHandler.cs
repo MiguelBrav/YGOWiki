@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Collections;
 using Grpc.Net.Client;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using ServerYGO;
 using System.Text.Json;
@@ -15,10 +16,19 @@ namespace YGOClient.QueriesHandler
     {
         private readonly YGOWiki.YGOWikiClient _client;
         private readonly IPaginationService<TrapTypeDetail> _paginationService;
-        public AllTrapsPageQueryHandler(YGOWiki.YGOWikiClient client, IPaginationService<TrapTypeDetail> paginationService)
+        private readonly ICacheService _cacheService;
+        private readonly IMemoryCache _cache;
+        private readonly IConfiguration _config;
+        private readonly int _cacheMinutes;
+
+        public AllTrapsPageQueryHandler(YGOWiki.YGOWikiClient client, IPaginationService<TrapTypeDetail> paginationService, ICacheService cacheService, IConfiguration config, IMemoryCache cache)
         {
             _client = client;
             _paginationService = paginationService;
+            _cacheService = cacheService;
+            _config = config;
+            _cacheMinutes = _config.GetValue<int>("CacheSettings:Minutes");
+            _cache = cache;
         }
 
         public async Task<ApiResponse> Handle(AllTrapsPageQuery request, CancellationToken cancellationToken)
@@ -27,6 +37,13 @@ namespace YGOClient.QueriesHandler
 
             try
             {
+                string cacheKey = await _cacheService.Generate(request);
+
+                if (_cache.TryGetValue(cacheKey, out ApiResponse cachedResponse))
+                {
+                    return cachedResponse;
+                }
+
                 AllTrapTypeReply response = await _client.GetAllTrapCardsAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
                 //RepeatedField<TrapTypeDetail> trapsPage =  _paginationService.GetPagedData(response.TrapTypes, request.PageId, request.PageSize);
@@ -57,6 +74,9 @@ namespace YGOClient.QueriesHandler
                 grpcResponse.StatusCode = 200;
                 grpcResponse.ResponseMessage = jsonResponse;
                 grpcResponse.Response = true;
+
+                _cache.Set(cacheKey, grpcResponse, TimeSpan.FromMinutes(_cacheMinutes));
+
             }
             catch (ArgumentOutOfRangeException ex)
             {

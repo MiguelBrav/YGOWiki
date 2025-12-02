@@ -35,12 +35,14 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddGrpcClient<YGOWiki.YGOWikiClient>(o =>
 {
     o.Address = new Uri(builder.Configuration.GetValue<string>("YGOServer"));
 });
 
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

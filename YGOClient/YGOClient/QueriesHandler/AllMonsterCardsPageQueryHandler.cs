@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Collections;
 using Grpc.Net.Client;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using ServerYGO;
 using System.Text.Json;
@@ -15,10 +16,19 @@ namespace YGOClient.QueriesHandler
     {
         private readonly YGOWiki.YGOWikiClient _client;
         private readonly IPaginationService<MonsterCardDetail> _paginationService;
-        public AllMonsterCardsPageQueryHandler(YGOWiki.YGOWikiClient client, IPaginationService<MonsterCardDetail> paginationService)
+        private readonly ICacheService _cacheService;
+        private readonly IMemoryCache _cache;
+        private readonly IConfiguration _config;
+        private readonly int _cacheMinutes;
+
+        public AllMonsterCardsPageQueryHandler(YGOWiki.YGOWikiClient client, IPaginationService<MonsterCardDetail> paginationService, ICacheService cacheService, IConfiguration config, IMemoryCache cache)
         {
             _client = client;
             _paginationService = paginationService;
+            _cacheService = cacheService;
+            _config = config;
+            _cacheMinutes = _config.GetValue<int>("CacheSettings:Minutes");
+            _cache = cache;
         }
 
         public async Task<ApiResponse> Handle(AllMonsterCardsPageQuery request, CancellationToken cancellationToken)
@@ -27,6 +37,13 @@ namespace YGOClient.QueriesHandler
 
             try
             {
+                string cacheKey = await _cacheService.Generate(request);
+
+                if (_cache.TryGetValue(cacheKey, out ApiResponse cachedResponse))
+                {
+                    return cachedResponse;
+                }
+
                 AllMonsterCardTypeReply response = await _client.GetAllMonsterCardTypesAsync(new ByLanguageId { LanguageId = request.LanguageId });
 
                 //RepeatedField<MonsterCardDetail> monsterCards = _paginationService.GetPagedData(response.MonsterCardTypes, request.PageId, request.PageSize);
@@ -58,6 +75,9 @@ namespace YGOClient.QueriesHandler
                 grpcResponse.StatusCode = 200;
                 grpcResponse.ResponseMessage = jsonResponse;
                 grpcResponse.Response = true;
+
+                _cache.Set(cacheKey, grpcResponse, TimeSpan.FromMinutes(_cacheMinutes));
+
             }
             catch (ArgumentOutOfRangeException ex)
             {
