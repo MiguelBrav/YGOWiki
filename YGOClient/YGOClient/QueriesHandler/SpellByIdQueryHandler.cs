@@ -1,10 +1,12 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using ServerYGO;
 using System.Text.Json;
 using YGOClient.DTO.APIResponse;
+using YGOClient.Interfaces;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
@@ -12,10 +14,18 @@ namespace YGOClient.QueriesHandler
     public class SpellByIdQueryHandler : IRequestHandler<SpellByIdQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
+        private readonly ICacheService _cacheService;
+        private readonly IMemoryCache _cache;
+        private readonly IConfiguration _config;
+        private readonly int _cacheMinutes;
 
-        public SpellByIdQueryHandler(YGOWiki.YGOWikiClient client)
+        public SpellByIdQueryHandler(YGOWiki.YGOWikiClient client, ICacheService cacheService, IConfiguration config, IMemoryCache cache)
         {
             _client = client;
+            _cacheService = cacheService;
+            _config = config;
+            _cacheMinutes = _config.GetValue<int>("CacheSettings:Minutes");
+            _cache = cache;
         }
 
         public async Task<ApiResponse> Handle(SpellByIdQuery request, CancellationToken cancellationToken)
@@ -24,6 +34,13 @@ namespace YGOClient.QueriesHandler
 
             try
             {
+                string cacheKey = await _cacheService.Generate(request);
+
+                if (_cache.TryGetValue(cacheKey, out ApiResponse cachedResponse))
+                {
+                    return cachedResponse;
+                }
+
                 SpellTypeDetail response = await _client.GetSpellTypeAsync(new ByLanguageIdAndId { LanguageId = request.LanguageId, Id = request.Id });
 
                 var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
@@ -36,6 +53,9 @@ namespace YGOClient.QueriesHandler
                 grpcResponse.StatusCode = 200;
                 grpcResponse.ResponseMessage = jsonResponse;
                 grpcResponse.Response = true;
+
+                _cache.Set(cacheKey, grpcResponse, TimeSpan.FromMinutes(_cacheMinutes));
+
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Cancelled && !string.IsNullOrEmpty(ex.Status.Detail))
             {
