@@ -25,7 +25,7 @@ var client = new Greeter.GreeterClient(channel);
 var response = await client.SayHelloAsync(new HelloRequest { Name = ".NET" });
 ```
 
-You need to replace the url to "https://ygowiki.application-service.work/".
+You need to replace the url to "https://yugiserver.segurab.com/".
 
 You can also try it, using Kreya. [Kreya - Calling APIs made easy](https://kreya.app/)
 
@@ -42,7 +42,7 @@ The available languages ​​are es-mx (Spanish - Español) and en-us (English 
 YGO Client
 ```
 curl -X 'GET' \
-  'https://ygoclient.application-service.work/Attribute/all/es-mx' \
+  'https://yugiclient.segurab.com/Attribute/all/es-mx' \
   -H 'accept: */*'
 ```
 ![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1706388137/Github/x9tns28fs6l0ecnvdypw.png)
@@ -51,9 +51,9 @@ curl -X 'GET' \
 
 ![App Screenshot](https://res.cloudinary.com/imgresd/image/upload/v1706388237/Github/dvjsmmq0khjm29iidian.png)
 
-You can consume the API using this URL: "https://ygoclient.application-service.work/".
+You can consume the API using this URL: "https://yugiclient.segurab.com/swagger/index.html".
 
-For more information, you can check this swagger doc online about the ygo client. [YGO Client - Swagger Documentation](https://ygoclient.application-service.work/swagger/index.html)
+For more information, you can check this swagger doc online about the ygo client. [YGO Client - Swagger Documentation](https://yugiclient.segurab.com/swagger/index.html)
 
 
 ## Running Tests
