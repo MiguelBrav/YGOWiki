@@ -1,3 +1,4 @@
+using Grpc.Net.Client.Web;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,9 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddGrpcClient<YGOWiki.YGOWikiClient>(o =>
 {
     o.Address = new Uri(builder.Configuration.GetValue<string>("YGOServer"));
+}).ConfigurePrimaryHttpMessageHandler(() =>
+{
+    return new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler());
 });
 
 builder.Services.AddMemoryCache();

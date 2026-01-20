@@ -36,7 +36,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseRouting();
 app.UseGrpcWeb();
-app.UseCors();
+app.UseCors("AllowAll");
 app.UseEndpoints(endpoints =>
 {
     app.MapGrpcService<YGOService>().RequireCors("AllowAll").EnableGrpcWeb();
