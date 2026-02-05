@@ -1,12 +1,7 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using YGOClient.Aggregator.Interfaces;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +10,11 @@ namespace YGOClient.Controllers
     public class AttributeController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly IAttributeAggregator _dispatcher;
 
-        public AttributeController(IMediator mediator)
+        public AttributeController(IAttributeAggregator dispatcher)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
         }
         /// <summary>
         /// Get all attributes translated by languageId
@@ -38,7 +33,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.AllAttributesQuery(query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +77,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.AllAttributesPageQuery(query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +110,7 @@ namespace YGOClient.Controllers
                 Id = attributeId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.AttributeByIdQuery(query);
 
             if (response.StatusCode == 204)
             {

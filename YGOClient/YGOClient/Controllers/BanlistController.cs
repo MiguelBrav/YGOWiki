@@ -1,12 +1,10 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
+using YGOClient.Aggregator;
+using YGOClient.Aggregator.Interfaces;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +13,12 @@ namespace YGOClient.Controllers
     public class BanlistController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly IBanlistAggregator _aggregator;
 
-        public BanlistController(IMediator mediator)
+
+        public BanlistController(IBanlistAggregator aggregator)
         {
-            _mediator = mediator;
+            _aggregator = aggregator;
         }
         /// <summary>
         /// Get all banlist translated by languageId
@@ -38,7 +37,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _aggregator.AllBanlistQuery(query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +81,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _aggregator.AllBanlistPageQuery(query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +114,7 @@ namespace YGOClient.Controllers
                 Id = banlistId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _aggregator.BanlistByIdQuery(query);
 
             if (response.StatusCode == 204)
             {

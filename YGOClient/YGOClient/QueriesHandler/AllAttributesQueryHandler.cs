@@ -1,17 +1,14 @@
-﻿using Grpc.Net.Client;
-using MediatR;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.Memory;
 using ServerYGO;
 using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
 using YGOClient.Queries;
-using YGOClient.Services;
 
 namespace YGOClient.QueriesHandler
 {
-     public class AllAttributesQueryHandler : IRequestHandler<AllAttributesQuery, ApiResponse>
+     public class AllAttributesQueryHandler : UseCaseBase<AllAttributesQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
         private readonly ICacheService _cacheService;
@@ -28,7 +25,7 @@ namespace YGOClient.QueriesHandler
             _cache = cache;
         }
 
-        public async Task<ApiResponse> Handle(AllAttributesQuery request, CancellationToken cancellationToken)
+        public override async Task<ApiResponse> Execute(AllAttributesQuery request)
         {
             ApiResponse grpcResponse = new ApiResponse();
 

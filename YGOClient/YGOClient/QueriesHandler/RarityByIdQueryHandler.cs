@@ -1,17 +1,15 @@
 ﻿using Grpc.Core;
-using Grpc.Net.Client;
-using MediatR;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using ServerYGO;
 using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
 using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
 {
-    public class RarityByIdQueryHandler : IRequestHandler<RarityByIdQuery, ApiResponse>
+    public class RarityByIdQueryHandler : UseCaseBase<RarityByIdQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
         private readonly ICacheService _cacheService;
@@ -28,7 +26,7 @@ namespace YGOClient.QueriesHandler
             _cache = cache;
         }
 
-        public async Task<ApiResponse> Handle(RarityByIdQuery request, CancellationToken cancellationToken)
+        public override async Task<ApiResponse> Execute(RarityByIdQuery request)
         {
             ApiResponse grpcResponse = new ApiResponse();
 

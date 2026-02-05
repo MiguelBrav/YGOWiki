@@ -1,9 +1,6 @@
-﻿using MediatR;
-using YGOClient.DTO.APIResponse;
-
-namespace YGOClient.Queries
+﻿namespace YGOClient.Queries
 {
-    public class TypeCardByIdQuery : IRequest<ApiResponse>
+    public class TypeCardByIdQuery 
     {
         public string LanguageId { get; set; }
         public int Id { get; set; }

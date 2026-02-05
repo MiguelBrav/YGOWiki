@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class TypeCardController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllTypeCardsQueryHandler _allTypeCardsQueryHandler;
+        private readonly AllTypeCardsPageQueryHandler _allTypeCardsPageQueryHandler;
+        private readonly TypeCardByIdQueryHandler _typeCardByIdQueryHandler;
 
-        public TypeCardController(IMediator mediator)
+        public TypeCardController(UseCaseDispatcher dispatcher, AllTypeCardsQueryHandler allTypeCardsQueryHandler, AllTypeCardsPageQueryHandler allTypeCardsPageQueryHandler, TypeCardByIdQueryHandler typeCardByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allTypeCardsQueryHandler = allTypeCardsQueryHandler;
+            _allTypeCardsPageQueryHandler = allTypeCardsPageQueryHandler;
+            _typeCardByIdQueryHandler = typeCardByIdQueryHandler;
         }
         /// <summary>
         /// Get all type cards translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allTypeCardsQueryHandler,query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allTypeCardsPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +117,7 @@ namespace YGOClient.Controllers
                 Id = typeCardId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_typeCardByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {

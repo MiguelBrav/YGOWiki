@@ -1,10 +1,7 @@
-﻿using Google.Protobuf.Collections;
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.Memory;
 using ServerYGO;
 using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
 using YGOClient.Models;
@@ -12,7 +9,7 @@ using YGOClient.Queries;
 
 namespace YGOClient.QueriesHandler
 {
-     public class AllSpellsPageQueryHandler : IRequestHandler<AllSpellsPageQuery, ApiResponse>
+     public class AllSpellsPageQueryHandler : UseCaseBase<AllSpellsPageQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
         private readonly IPaginationService<SpellTypeDetail> _paginationService;
@@ -30,7 +27,7 @@ namespace YGOClient.QueriesHandler
             _cache = cache;
         }
 
-        public async Task<ApiResponse> Handle(AllSpellsPageQuery request, CancellationToken cancellationToken)
+        public override async Task<ApiResponse> Execute(AllSpellsPageQuery request)
         {
             ApiResponse grpcResponse = new ApiResponse();
 

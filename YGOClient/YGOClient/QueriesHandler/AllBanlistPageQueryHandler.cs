@@ -1,19 +1,15 @@
-﻿using Google.Protobuf.Collections;
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.Memory;
 using ServerYGO;
 using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Interfaces;
 using YGOClient.Models;
 using YGOClient.Queries;
-using YGOClient.Services;
 
 namespace YGOClient.QueriesHandler
 {
-     public class AllBanlistPageQueryHandler : IRequestHandler<AllBanlistPageQuery, ApiResponse>
+     public class AllBanlistPageQueryHandler : UseCaseBase<AllBanlistPageQuery, ApiResponse>
     {
         private readonly YGOWiki.YGOWikiClient _client;
         private readonly IPaginationService<BanlistTypeDetail> _paginationService;
@@ -31,7 +27,7 @@ namespace YGOClient.QueriesHandler
             _cache = cache;
         }
 
-        public async Task<ApiResponse> Handle(AllBanlistPageQuery request, CancellationToken cancellationToken)
+        public override async Task<ApiResponse> Execute(AllBanlistPageQuery request)
         {
             ApiResponse grpcResponse = new ApiResponse();
 

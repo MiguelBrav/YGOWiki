@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class RarityController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllRaritiesQueryHandler _allRaritiesQueryHandler;
+        private readonly AllRaritiesPageQueryHandler _allRaritiesPageQueryHandler;
+        private readonly RarityByIdQueryHandler _rarityByIdQueryHandler;
 
-        public RarityController(IMediator mediator)
+        public RarityController(UseCaseDispatcher dispatcher, AllRaritiesQueryHandler allRaritiesQueryHandler, AllRaritiesPageQueryHandler allRaritiesPageQueryHandler, RarityByIdQueryHandler rarityByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allRaritiesQueryHandler = allRaritiesQueryHandler;
+            _allRaritiesPageQueryHandler = allRaritiesPageQueryHandler;
+            _rarityByIdQueryHandler = rarityByIdQueryHandler;
         }
         /// <summary>
         /// Get all rarities translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allRaritiesQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allRaritiesPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +117,7 @@ namespace YGOClient.Controllers
                 Id = rarityId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_rarityByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
