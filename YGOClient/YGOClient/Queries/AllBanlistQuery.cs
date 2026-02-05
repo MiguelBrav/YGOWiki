@@ -1,9 +1,6 @@
-﻿using MediatR;
-using YGOClient.DTO.APIResponse;
-
-namespace YGOClient.Queries
+﻿namespace YGOClient.Queries
 {
-    public class AllBanlistQuery : IRequest<ApiResponse>
+    public class AllBanlistQuery 
     {
         public string LanguageId { get; set; }
     }

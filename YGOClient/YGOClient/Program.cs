@@ -1,12 +1,13 @@
 using Grpc.Net.Client.Web;
-using MediatR;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using ServerYGO;
 using System.Reflection;
+using UseCaseCore.UseCases;
 using YGOClient.Interfaces;
+using YGOClient.QueriesHandler;
 using YGOClient.Services;
+using YGOClient.Aggregator;
+using YGOClient.Aggregator.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-builder.Services.AddMediatR(a => a.RegisterServicesFromAssembly(typeof(Program).Assembly));
+//builder.Services.AddMediatR(a => a.RegisterServicesFromAssembly(typeof(Program).Assembly));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -34,6 +35,45 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
+
+builder.Services.AddTransient<AllAttributesPageQueryHandler>();
+builder.Services.AddTransient<AllAttributesQueryHandler>();
+builder.Services.AddTransient<AllBanlistPageQueryHandler>();
+builder.Services.AddTransient<AllBanlistQueryHandler>();
+builder.Services.AddTransient<AllMonsterCardsQueryHandler>();
+builder.Services.AddTransient<AllMonsterTypesPageQueryHandler>();
+builder.Services.AddTransient<AllMonsterCardsPageQueryHandler>();
+builder.Services.AddTransient<AllMonsterTypesQueryHandler>();
+builder.Services.AddTransient<AllRaritiesPageQueryHandler>();
+builder.Services.AddTransient<AllRaritiesQueryHandler>();
+builder.Services.AddTransient<AllSpecialMonsterCardsPageQueryHandler>();
+builder.Services.AddTransient<AllSpecialMonsterCardsQueryHandler>();
+builder.Services.AddTransient<AllSpellsPageQueryHandler>();
+builder.Services.AddTransient<AllSpellsQueryHandler>();
+builder.Services.AddTransient<AllTrapsPageQueryHandler>();
+builder.Services.AddTransient<AllTrapsQueryHandler>();
+builder.Services.AddTransient<AllTypeCardsPageQueryHandler>();
+builder.Services.AddTransient<AllTypeCardsQueryHandler>();
+builder.Services.AddTransient<AttributeByIdQueryHandler>();
+builder.Services.AddTransient<BanlistByIdQueryHandler>();
+builder.Services.AddTransient<MonsterCardByIdQueryHandler>();
+builder.Services.AddTransient<MonsterTypeByIdQueryHandler>();
+builder.Services.AddTransient<RarityByIdQueryHandler>();
+builder.Services.AddTransient<SpecialMonsterCardByIdQueryHandler>();
+builder.Services.AddTransient<SpellByIdQueryHandler>();
+builder.Services.AddTransient<TrapByIdQueryHandler>();
+builder.Services.AddTransient<TypeCardByIdQueryHandler>();
+builder.Services.AddTransient<UseCaseDispatcher>();
+// Aggregator registrations
+builder.Services.AddTransient<IAttributeAggregator, AttributeAggregator>();
+builder.Services.AddTransient<IBanlistAggregator, BanlistAggregator>();
+builder.Services.AddTransient<IMonsterCardAggregator, MonsterCardAggregator>();
+builder.Services.AddTransient<IMonsterTypeAggregator, MonsterTypeAggregator>();
+builder.Services.AddTransient<IRarityAggregator, RarityAggregator>();
+builder.Services.AddTransient<ISpecialMonsterAggregator, SpecialMonsterAggregator>();
+builder.Services.AddTransient<ISpellAggregator, SpellAggregator>();
+builder.Services.AddTransient<ITrapAggregator, TrapAggregator>();
+builder.Services.AddTransient<ITypeCardAggregator, TypeCardAggregator>();
 
 builder.Services.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
 builder.Services.AddScoped<ICacheService, CacheService>();

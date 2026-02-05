@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class MonsterTypeController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllMonsterTypesQueryHandler _allMonsterTypesQueryHandler;
+        private readonly AllMonsterTypesPageQueryHandler _allMonsterTypesPageQueryHandler;
+        private readonly MonsterTypeByIdQueryHandler _monsterTypeByIdQueryHandler;
 
-        public MonsterTypeController(IMediator mediator)
+        public MonsterTypeController(UseCaseDispatcher dispatcher, AllMonsterTypesQueryHandler allMonsterTypesQueryHandler, AllMonsterTypesPageQueryHandler allMonsterTypesPageQueryHandler, MonsterTypeByIdQueryHandler monsterTypeByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allMonsterTypesQueryHandler = allMonsterTypesQueryHandler;
+            _allMonsterTypesPageQueryHandler = allMonsterTypesPageQueryHandler;
+            _monsterTypeByIdQueryHandler = monsterTypeByIdQueryHandler;
         }
         /// <summary>
         /// Get all monster types translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allMonsterTypesQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allMonsterTypesPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +117,7 @@ namespace YGOClient.Controllers
                 Id = monsterTypeId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_monsterTypeByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {

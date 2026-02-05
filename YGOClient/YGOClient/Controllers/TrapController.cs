@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class TrapController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllTrapsQueryHandler _allTrapsQueryHandler;
+        private readonly AllTrapsPageQueryHandler _allTrapsPageQueryHandler;
+        private readonly TrapByIdQueryHandler _trapByIdQueryHandler;
 
-        public TrapController(IMediator mediator)
+        public TrapController(UseCaseDispatcher dispatcher, AllTrapsQueryHandler allTrapsQueryHandler, AllTrapsPageQueryHandler allTrapsPageQueryHandler, TrapByIdQueryHandler trapByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allTrapsQueryHandler = allTrapsQueryHandler;
+            _allTrapsPageQueryHandler = allTrapsPageQueryHandler;
+            _trapByIdQueryHandler = trapByIdQueryHandler;
         }
         /// <summary>
         /// Get all trap types translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allTrapsQueryHandler,query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allTrapsPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +117,7 @@ namespace YGOClient.Controllers
                 Id = trapTypeId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_trapByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {

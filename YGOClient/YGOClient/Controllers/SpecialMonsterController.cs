@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class SpecialMonsterController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllSpecialMonsterCardsQueryHandler _allSpecialMonsterCardsQueryHandler;
+        private readonly AllSpecialMonsterCardsPageQueryHandler _allSpecialMonsterCardsPageQueryHandler;
+        private readonly SpecialMonsterCardByIdQueryHandler _specialMonsterCardByIdQueryHandler;
 
-        public SpecialMonsterController(IMediator mediator)
+        public SpecialMonsterController(UseCaseDispatcher dispatcher, AllSpecialMonsterCardsQueryHandler allSpecialMonsterCardsQueryHandler, AllSpecialMonsterCardsPageQueryHandler allSpecialMonsterCardsPageQueryHandler, SpecialMonsterCardByIdQueryHandler specialMonsterCardByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allSpecialMonsterCardsQueryHandler = allSpecialMonsterCardsQueryHandler;
+            _allSpecialMonsterCardsPageQueryHandler = allSpecialMonsterCardsPageQueryHandler;
+            _specialMonsterCardByIdQueryHandler = specialMonsterCardByIdQueryHandler;
         }
         /// <summary>
         /// Get all special monster types translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allSpecialMonsterCardsQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allSpecialMonsterCardsPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +117,7 @@ namespace YGOClient.Controllers
                 Id = specialTypeId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_specialMonsterCardByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {

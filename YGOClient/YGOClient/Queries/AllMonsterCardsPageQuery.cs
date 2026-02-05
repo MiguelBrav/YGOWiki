@@ -1,9 +1,6 @@
-﻿using MediatR;
-using YGOClient.DTO.APIResponse;
-
-namespace YGOClient.Queries
+﻿namespace YGOClient.Queries
 {
-    public class AllMonsterCardsPageQuery : IRequest<ApiResponse>
+    public class AllMonsterCardsPageQuery 
     {
         public string LanguageId { get; set; }
 

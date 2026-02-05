@@ -1,9 +1,6 @@
-﻿using MediatR;
-using YGOClient.DTO.APIResponse;
-
-namespace YGOClient.Queries
+﻿namespace YGOClient.Queries
 {
-    public class AllTrapsQuery : IRequest<ApiResponse>
+    public class AllTrapsQuery
     {
         public string LanguageId { get; set; }
     }

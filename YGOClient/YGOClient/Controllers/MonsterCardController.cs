@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class MonsterCardController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllMonsterCardsQueryHandler _allMonsterCardsQueryHandler;
+        private readonly AllMonsterCardsPageQueryHandler _allMonsterCardsPageQueryHandler;
+        private readonly MonsterCardByIdQueryHandler _monsterCardByIdQueryHandler;
 
-        public MonsterCardController(IMediator mediator)
+        public MonsterCardController(UseCaseDispatcher dispatcher, AllMonsterCardsQueryHandler allMonsterCardsQueryHandler, AllMonsterCardsPageQueryHandler allMonsterCardsPageQueryHandler, MonsterCardByIdQueryHandler monsterCardByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allMonsterCardsQueryHandler = allMonsterCardsQueryHandler;
+            _allMonsterCardsPageQueryHandler = allMonsterCardsPageQueryHandler;
+            _monsterCardByIdQueryHandler = monsterCardByIdQueryHandler;
         }
         /// <summary>
         /// Get all monster card types translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allMonsterCardsQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allMonsterCardsPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -116,7 +118,7 @@ namespace YGOClient.Controllers
                 Id = monsterCardId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_monsterCardByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {

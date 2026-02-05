@@ -1,21 +1,14 @@
-﻿using Google.Protobuf.WellKnownTypes;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using MediatR;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ServerYGO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xunit;
-using YGOClient.Controllers;
+using YGOClient.Aggregator.Interfaces;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Models;
 using YGOClient.Queries;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.XUnit
 {
@@ -28,14 +21,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributes_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -48,14 +41,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributes_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -73,14 +66,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributes_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllAttributeReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -99,14 +92,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributesPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId , PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -119,14 +112,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributesPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -144,14 +137,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributesPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -170,14 +163,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributesPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -195,14 +188,14 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributesPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -220,15 +213,15 @@ namespace YGOClient.XUnit
         public async Task GetAllAttributesPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AllAttributesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllAttributeReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<AttributeDetail>()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllAttributesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllAttributesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -247,15 +240,15 @@ namespace YGOClient.XUnit
         public async Task GetAttribute_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AttributeByIdQuery { LanguageId = languageId , Id = id};
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AttributeByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AttributeByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -273,14 +266,14 @@ namespace YGOClient.XUnit
         public async Task GetAttribute_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AttributeByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AttributeByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AttributeByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -299,14 +292,14 @@ namespace YGOClient.XUnit
         public async Task GetAttribute_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IAttributeAggregator>();
             var query = new AttributeByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AttributeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AttributeByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AttributeByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -325,14 +318,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlist_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -345,14 +338,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlist_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -370,14 +363,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlist_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllBanlistReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -396,14 +389,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlistPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -416,14 +409,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlistPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -441,14 +434,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlistPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -467,14 +460,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlistPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -492,14 +485,14 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlistPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -517,15 +510,15 @@ namespace YGOClient.XUnit
         public async Task GetAllBanlistPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new AllBanlistPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllBanlistReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<BanlistTypeDetail>()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllBanlistPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllBanlistPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -544,15 +537,15 @@ namespace YGOClient.XUnit
         public async Task GetBanlist_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new BanlistByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.BanlistByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.BanlistByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -570,14 +563,14 @@ namespace YGOClient.XUnit
         public async Task GetBanlist_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new BanlistByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.BanlistByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.BanlistByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -596,14 +589,14 @@ namespace YGOClient.XUnit
         public async Task GetBanlist_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IBanlistAggregator>();
             var query = new BanlistByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new BanlistTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.BanlistByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.BanlistByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -623,14 +616,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCard_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -643,14 +636,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCard_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -668,14 +661,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCard_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterCardTypeReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -694,14 +687,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCardPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -714,14 +707,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCardPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -739,14 +732,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCardPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -765,14 +758,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCardPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -790,14 +783,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCardPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -815,15 +808,15 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterCardPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new AllMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterCardTypeReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<MonsterCardDetail>()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -842,15 +835,15 @@ namespace YGOClient.XUnit
         public async Task GetMonsterCard_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new MonsterCardByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.MonsterCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.MonsterCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -868,14 +861,14 @@ namespace YGOClient.XUnit
         public async Task GetMonsterCard_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new MonsterCardByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.MonsterCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.MonsterCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -894,14 +887,14 @@ namespace YGOClient.XUnit
         public async Task GetMonsterCard_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterCardAggregator>();
             var query = new MonsterCardByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new MonsterCardDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.MonsterCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.MonsterCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -921,14 +914,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterType_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -941,14 +934,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterType_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -966,14 +959,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterType_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterTypeReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -993,14 +986,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterTypePage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1013,14 +1006,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterTypePage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1038,14 +1031,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterTypePage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1064,14 +1057,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterTypePage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1089,14 +1082,14 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterTypePage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1114,15 +1107,15 @@ namespace YGOClient.XUnit
         public async Task GetAllMonsterTypePage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new AllMonsterTypesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllMonsterTypeReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<MonsterTypeDetail>()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllMonsterTypesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllMonsterTypesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1141,15 +1134,15 @@ namespace YGOClient.XUnit
         public async Task GetMonsterType_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new MonsterTypeByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.MonsterTypeByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.MonsterTypeByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1167,14 +1160,14 @@ namespace YGOClient.XUnit
         public async Task GetMonsterType_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new MonsterTypeByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.MonsterTypeByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.MonsterTypeByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1193,14 +1186,14 @@ namespace YGOClient.XUnit
         public async Task GetMonsterType_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IMonsterTypeAggregator>();
             var query = new MonsterTypeByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new MonsterTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.MonsterTypeByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.MonsterTypeByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1220,14 +1213,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRarities_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1240,14 +1233,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRarities_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1265,14 +1258,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRarities_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllRarityReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1291,14 +1284,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRaritiesPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1311,14 +1304,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRaritiesPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1336,14 +1329,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRaritiesPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1362,14 +1355,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRaritiesPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1387,14 +1380,14 @@ namespace YGOClient.XUnit
         public async Task GetAllRaritiesPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1412,16 +1405,16 @@ namespace YGOClient.XUnit
         public async Task GetAllRaritiesPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new AllRaritiesPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllRarityReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<RarityTypeDetail>()) };
 
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllRaritiesPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllRaritiesPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1440,15 +1433,15 @@ namespace YGOClient.XUnit
         public async Task GetRarity_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new RarityByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.RarityByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.RarityByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1466,14 +1459,14 @@ namespace YGOClient.XUnit
         public async Task GetRarity_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new RarityByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.RarityByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.RarityByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1492,14 +1485,14 @@ namespace YGOClient.XUnit
         public async Task GetRarity_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<IRarityAggregator>();
             var query = new RarityByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new RarityTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.RarityByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.RarityByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1519,14 +1512,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonsters_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1539,14 +1532,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonsters_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1564,14 +1557,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonsters_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
-            var query = new AllSpecialMonsterCardsQuery { LanguageId = languageId };
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
+            var query = new AllSpecialMonsterCardsQuery{ LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpecialMonsterTypeReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1590,14 +1583,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonstersPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1610,14 +1603,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonstersPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1635,14 +1628,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonstersPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1661,14 +1654,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonstersPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1686,14 +1679,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonstersPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1711,16 +1704,16 @@ namespace YGOClient.XUnit
         public async Task GetAllSpecialMonstersPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new AllSpecialMonsterCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpecialMonsterTypeReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<SpecialMonsterTypeDetail>()) };
 
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpecialMonsterCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpecialMonsterCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1739,15 +1732,15 @@ namespace YGOClient.XUnit
         public async Task GetSpecialMonster_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new SpecialMonsterCardByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.SpecialMonsterCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.SpecialMonsterCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1765,14 +1758,14 @@ namespace YGOClient.XUnit
         public async Task GetSpecialMonster_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new SpecialMonsterCardByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.SpecialMonsterCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.SpecialMonsterCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1791,14 +1784,14 @@ namespace YGOClient.XUnit
         public async Task GetSpecialMonster_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpecialMonsterAggregator>();
             var query = new SpecialMonsterCardByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new SpecialMonsterTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.SpecialMonsterCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.SpecialMonsterCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1818,14 +1811,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpells_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1838,14 +1831,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpells_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1863,14 +1856,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpells_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpellTypeReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1889,14 +1882,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpellsPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1909,14 +1902,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpellsPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1934,14 +1927,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpellsPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1960,14 +1953,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpellsPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -1985,14 +1978,14 @@ namespace YGOClient.XUnit
         public async Task GetAllSpellsPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2010,16 +2003,16 @@ namespace YGOClient.XUnit
         public async Task GetAllSpellsPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new AllSpellsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllSpellTypeReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<SpellTypeDetail>()) };
 
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllSpellsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllSpellsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2038,15 +2031,15 @@ namespace YGOClient.XUnit
         public async Task GetSpell_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new SpellByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.SpellByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.SpellByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2064,14 +2057,14 @@ namespace YGOClient.XUnit
         public async Task GetSpell_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new SpellByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.SpellByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.SpellByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2090,14 +2083,14 @@ namespace YGOClient.XUnit
         public async Task GetSpell_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ISpellAggregator>();
             var query = new SpellByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new SpellTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.SpellByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.SpellByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2117,14 +2110,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTraps_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2137,14 +2130,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTraps_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2162,14 +2155,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTraps_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTrapTypeReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2188,14 +2181,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTrapsPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2208,14 +2201,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTrapsPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2233,14 +2226,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTrapsPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2259,14 +2252,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTrapsPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2284,14 +2277,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTrapsPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2309,16 +2302,16 @@ namespace YGOClient.XUnit
         public async Task GetAllTrapsPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new AllTrapsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTrapTypeReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<TrapTypeDetail>()) };
 
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTrapsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTrapsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2337,15 +2330,15 @@ namespace YGOClient.XUnit
         public async Task GetTrap_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new TrapByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.TrapByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.TrapByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2363,14 +2356,14 @@ namespace YGOClient.XUnit
         public async Task GetTrap_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new TrapByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.TrapByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.TrapByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2389,14 +2382,14 @@ namespace YGOClient.XUnit
         public async Task GetTrap_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITrapAggregator>();
             var query = new TrapByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new TrapTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.TrapByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.TrapByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2416,14 +2409,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCards_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2436,14 +2429,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCards_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2461,14 +2454,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCards_ReturnsStatusCode200_WhenResponseIsContent(string languageId)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsQuery { LanguageId = languageId };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTypeCardsReply()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2487,14 +2480,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCardsPage_ReturnsStatusCode204_WhenResponseIsNoContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 204 };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2507,14 +2500,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCardsPage_ReturnsStatusCode400_WhenPageIdIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "PageId must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2532,14 +2525,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCardsPage_ReturnsStatusCode400_WhenPageSizeIsEqualToZero(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 400, ResponseMessage = "Page size must be greater than 0" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2558,14 +2551,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCardsPage_ReturnsStatusCode405_WhenPageIdIsGreaterThanTotalPages(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 405, ResponseMessage = "The requested page is outside the valid range" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2583,14 +2576,14 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCardsPage_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2608,16 +2601,16 @@ namespace YGOClient.XUnit
         public async Task GetAllTypeCardsPage_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int pageId, int pageSize)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new AllTypeCardsPageQuery { LanguageId = languageId, PageId = pageId, PageSize = pageSize };
             //var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new AllTypeCardsReply()) };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new PagedResult<CardTypeDetail>()) };
 
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.AllTypeCardsPageQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.AllTypeCardsPageQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2636,15 +2629,15 @@ namespace YGOClient.XUnit
         public async Task GetTypeCard_ReturnsStatusCode404_WhenResponseIsNoContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new TypeCardByIdQuery { LanguageId = languageId, Id = id };
             RpcException exception = new RpcException(Status.DefaultCancelled, "Error");
             var apiResponse = new ApiResponse { StatusCode = 404, ResponseMessage = exception.Message };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.TypeCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.TypeCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2662,14 +2655,14 @@ namespace YGOClient.XUnit
         public async Task GetTypeCard_ReturnsStatusCode500_WhenResponseIsInternalServerError(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new TypeCardByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 500, ResponseMessage = "Error" };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.TypeCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.TypeCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);
@@ -2688,14 +2681,14 @@ namespace YGOClient.XUnit
         public async Task GetTypeCard_ReturnsStatusCode200_WhenResponseIsContent(string languageId, int id)
         {
             // Arrange
-            var mediatorMock = new Mock<IMediator>();
+            var queryHandler = new Mock<ITypeCardAggregator>();
             var query = new TypeCardByIdQuery { LanguageId = languageId, Id = id };
             var apiResponse = new ApiResponse { StatusCode = 200, ResponseMessage = JsonSerializer.Serialize(new CardTypeDetail()) };
 
-            mediatorMock.Setup(m => m.Send(query, default(CancellationToken))).ReturnsAsync(apiResponse);
+            queryHandler.Setup(m => m.TypeCardByIdQuery(query)).ReturnsAsync(apiResponse);
 
             // Act
-            var response = await mediatorMock.Object.Send(query);
+            var response = await queryHandler.Object.TypeCardByIdQuery(query);
 
             // Assert
             Assert.NotNull(response);

@@ -1,12 +1,8 @@
-using Grpc.Net.Client;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ServerYGO;
-using System.Text.Json;
+using UseCaseCore.UseCases;
 using YGOClient.DTO.APIResponse;
 using YGOClient.Queries;
-using static System.Net.WebRequestMethods;
+using YGOClient.QueriesHandler;
 
 namespace YGOClient.Controllers
 {
@@ -15,11 +11,17 @@ namespace YGOClient.Controllers
     public class SpellController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly UseCaseDispatcher _dispatcher;
+        private readonly AllSpellsQueryHandler _allSpellsQueryHandler;
+        private readonly AllSpellsPageQueryHandler _allSpellsPageQueryHandler;
+        private readonly SpellByIdQueryHandler _spellByIdQueryHandler;
 
-        public SpellController(IMediator mediator)
+        public SpellController(UseCaseDispatcher dispatcher, AllSpellsQueryHandler allSpellsQueryHandler, AllSpellsPageQueryHandler allSpellsPageQueryHandler, SpellByIdQueryHandler spellByIdQueryHandler)
         {
-            _mediator = mediator;
+            _dispatcher = dispatcher;
+            _allSpellsQueryHandler = allSpellsQueryHandler;
+            _allSpellsPageQueryHandler = allSpellsPageQueryHandler;
+            _spellByIdQueryHandler = spellByIdQueryHandler;
         }
         /// <summary>
         /// Get all spells types translated by languageId
@@ -38,7 +40,7 @@ namespace YGOClient.Controllers
                 LanguageId = languageId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allSpellsQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -82,7 +84,7 @@ namespace YGOClient.Controllers
                 PageSize = pageSize
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_allSpellsPageQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
@@ -115,7 +117,7 @@ namespace YGOClient.Controllers
                 Id = spellTypeId
             };
 
-            ApiResponse response = await _mediator.Send(query);
+            ApiResponse response = await _dispatcher.Dispatch(_spellByIdQueryHandler, query);
 
             if (response.StatusCode == 204)
             {
