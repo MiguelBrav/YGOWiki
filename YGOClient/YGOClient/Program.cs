@@ -1,4 +1,3 @@
-using Grpc.Net.Client.Web;
 using Microsoft.OpenApi.Models;
 using ServerYGO;
 using System.Reflection;
@@ -78,12 +77,20 @@ builder.Services.AddTransient<ITypeCardAggregator, TypeCardAggregator>();
 builder.Services.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
 builder.Services.AddScoped<ICacheService, CacheService>();
 
+AppContext.SetSwitch(
+    "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport",
+    true
+);
+
 builder.Services.AddGrpcClient<YGOWiki.YGOWikiClient>(o =>
 {
     o.Address = new Uri(builder.Configuration.GetValue<string>("YGOServer"));
 }).ConfigurePrimaryHttpMessageHandler(() =>
 {
-    return new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler());
+    return new SocketsHttpHandler
+    {
+        EnableMultipleHttp2Connections = false
+    };
 });
 
 builder.Services.AddMemoryCache();
@@ -97,7 +104,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
