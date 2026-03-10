@@ -62,6 +62,7 @@ builder.Services.AddTransient<SpecialMonsterCardByIdQueryHandler>();
 builder.Services.AddTransient<SpellByIdQueryHandler>();
 builder.Services.AddTransient<TrapByIdQueryHandler>();
 builder.Services.AddTransient<TypeCardByIdQueryHandler>();
+builder.Services.AddTransient<HealthCheckQueryHandler>();
 builder.Services.AddTransient<UseCaseDispatcher>();
 // Aggregator registrations
 builder.Services.AddTransient<IAttributeAggregator, AttributeAggregator>();
