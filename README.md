@@ -65,6 +65,8 @@ To run tests, run ServerTest.cs from project ServerYGO.NUnit
 ## Versioning
 
 Updated from .NET 6 to .NET 8 (20/10/25)
+<br>
+Updated from .NET 8 to .NET 10 (03/10/2026)
 
 ## Package References
 
